@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from ml_model import predict_category
@@ -5,7 +6,12 @@ from ml_model import predict_category
 app = Flask(__name__)
 
 # Flask secret key
-app.secret_key = "expensewise-secret-key"
+
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "expensewise-development-key"
+)
 
 # Database configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///expensewise.db"
