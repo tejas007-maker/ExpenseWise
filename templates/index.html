@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="ExpenseWise - Smart student expense tracking, budgeting and spending analytics">
+
+    <meta name="theme-color"
+          content="#172554">
+
+    <title>ExpenseWise | Smart Expense Tracker</title>
+    <link rel="icon"
+      type="image/svg+xml"
+      href="{{ url_for('static', filename='favicon.svg') }}">
+
+
+    <!-- =================================================
+         GOOGLE FONT
+         ================================================= -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+
+    <!-- =================================================
+         MAIN CSS
+         ================================================= -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOADING SCREEN
+     ===================================================== -->
+
+<div id="page-loader">
+
+    <div class="loader-content">
+
+        <div class="loader-logo">
+            ₹
+        </div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TOAST NOTIFICATIONS
+     ===================================================== -->
+
+<div id="toast-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="toast toast-{{ category }}">
+
+                <div class="toast-icon">
+
+                    {% if category == "success" %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+
+                </div>
+
+
+                <div class="toast-message">
+
+                    {{ message }}
+
+                </div>
+
+
+                <button
+                    class="toast-close"
+                    onclick="this.parentElement.remove()"
+                    aria-label="Close notification">
+
+                    ×
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+</div>
+
+
+
+<!-- =====================================================
+     NAVIGATION BAR
+     ===================================================== -->
+
+<nav class="navbar">
+
+
+    <!-- Brand -->
+
+    <a href="/" class="brand">
+
+        <div class="brand-icon">
+            ₹
+        </div>
+
+
+        <div>
+
+            <div class="brand-name">
+                ExpenseWise
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Expense Tracker
+            </div>
+
+        </div>
+
+    </a>
+
+
+
+    <!-- Navigation links -->
+
+    <div class="nav-links">
+
+        <a href="/" class="active">
+            Dashboard
+        </a>
+
+        <a href="/add-expense">
+            Expenses
+        </a>
+
+        <a href="/analytics">
+            Analytics
+        </a>
+
+        <a href="/budget">
+            Budget
+        </a>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN DASHBOARD
+     ===================================================== -->
+
+<main class="dashboard-container">
+
+
+
+    <!-- =================================================
+         HERO
+         ================================================= -->
+
+    <section class="dashboard-hero">
+
+
+        <div class="hero-content">
+
+
+            <span class="hero-badge">
+                ✦ Smart Financial Management
+            </span>
+
+
+            <h1>
+
+                Manage your money.
+
+                <span>
+                    Build better habits.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                Track your expenses, monitor your budget,
+                and understand where your money goes.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+
+                <a href="/add-expense"
+                   class="btn btn-primary">
+
+                    + Add Expense
+
+                </a>
+
+
+                <a href="/analytics"
+                   class="btn btn-secondary">
+
+                    View Analytics →
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- Decorative hero graphics -->
+
+        <div class="hero-decoration">
+
+
+            <div class="money-circle">
+                ₹
+            </div>
+
+
+            <div class="floating-card card-one">
+
+                💰
+
+                <span>
+                    Track spending
+                </span>
+
+            </div>
+
+
+            <div class="floating-card card-two">
+
+                📊
+
+                <span>
+                    Analyze habits
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         STATISTICS
+         ================================================= -->
+
+    <section class="stats-grid">
+
+
+        <!-- Total Spent -->
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon blue">
+                    ₹
+                </div>
+
+                <span class="stat-label">
+                    TOTAL SPENT
+                </span>
+
+            </div>
+
+
+            <h2>
+                ₹{{ "%.2f"|format(total_spent) }}
+            </h2>
+
+
+            <p>
+                Your recorded expenses
+            </p>
+
+        </div>
+
+
+
+        <!-- Monthly Budget -->
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon purple">
+                    🎯
+                </div>
+
+                <span class="stat-label">
+                    MONTHLY BUDGET
+                </span>
+
+            </div>
+
+
+            <h2>
+                ₹{{ "%.2f"|format(monthly_budget) }}
+            </h2>
+
+
+            <p>
+                Your spending limit
+            </p>
+
+        </div>
+
+
+
+        <!-- Remaining -->
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon green">
+                    ✓
+                </div>
+
+                <span class="stat-label">
+                    REMAINING
+                </span>
+
+            </div>
+
+
+            <h2>
+                ₹{{ "%.2f"|format(remaining_budget) }}
+            </h2>
+
+
+            <p>
+                Available budget
+            </p>
+
+        </div>
+
+
+
+        <!-- Transactions -->
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div class="stat-icon orange">
+                    #
+                </div>
+
+                <span class="stat-label">
+                    TRANSACTIONS
+                </span>
+
+            </div>
+
+
+            <h2>
+                {{ expenses|length }}
+            </h2>
+
+
+            <p>
+                Expenses recorded
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         BUDGET OVERVIEW
+         ================================================= -->
+
+    <section class="budget-card">
+
+
+        <div class="budget-header">
+
+
+            <div>
+
+                <span class="section-label">
+                    MONTHLY BUDGET
+                </span>
+
+                <h2>
+                    Budget Overview
+                </h2>
+
+            </div>
+
+
+            <a href="/budget"
+               class="small-btn">
+
+                Edit Budget
+
+            </a>
+
+
+        </div>
+
+
+
+        <div class="budget-values">
+
+
+            <span>
+
+                ₹{{ "%.2f"|format(total_spent) }}
+                spent
+
+            </span>
+
+
+            <span>
+
+                {{ "%.0f"|format(budget_percentage) }}%
+
+            </span>
+
+
+        </div>
+
+
+
+        <div class="progress-background">
+
+
+            <div
+                class="progress-bar"
+                style="width: {{ [budget_percentage, 100]|min }}%;">
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="budget-footer">
+
+
+            <span>
+
+                Budget:
+                ₹{{ "%.2f"|format(monthly_budget) }}
+
+            </span>
+
+
+            <span class="budget-status">
+
+                {{ budget_status }}
+
+            </span>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         RECENT EXPENSES
+         ================================================= -->
+
+    <section class="expenses-card">
+
+
+        <div class="section-header">
+
+
+            <div>
+
+                <span class="section-label">
+                    TRANSACTIONS
+                </span>
+
+                <h2>
+                    Recent Expenses
+                </h2>
+
+            </div>
+
+
+            <a href="/add-expense"
+               class="small-btn">
+
+                + Add Expense
+
+            </a>
+
+
+        </div>
+
+
+
+        {% if expenses %}
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            DATE
+                        </th>
+
+                        <th>
+                            DESCRIPTION
+                        </th>
+
+                        <th>
+                            CATEGORY
+                        </th>
+
+                        <th>
+                            AMOUNT
+                        </th>
+
+                        <th>
+                            ACTION
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for expense in expenses %}
+
+
+                    <tr>
+
+
+                        <!-- Date -->
+
+                        <td>
+
+                            {{ expense.date }}
+
+                        </td>
+
+
+
+                        <!-- Description -->
+
+                        <td>
+
+                            <div class="expense-name">
+
+
+                                <div class="expense-dot">
+                                    ₹
+                                </div>
+
+
+                                {{ expense.description }}
+
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- Category -->
+
+                        <td>
+
+                            <span class="category-badge">
+
+                                {{ expense.category }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- Amount -->
+
+                        <td>
+
+                            <strong>
+
+                                ₹{{ "%.2f"|format(expense.amount) }}
+
+                            </strong>
+
+                        </td>
+
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="action-links">
+
+
+                                <a
+                                    href="/edit-expense/{{ expense.id }}">
+
+                                    Edit
+
+                                </a>
+
+
+                                <a
+                                    href="/delete-expense/{{ expense.id }}"
+                                    class="delete-link"
+                                    onclick="return confirm('Are you sure you want to delete this expense?');">
+
+                                    Delete
+
+                                </a>
+
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- Empty state -->
+
+        <div class="empty-state">
+
+
+            <div class="empty-icon">
+                ₹
+            </div>
+
+
+            <h3>
+                No expenses yet
+            </h3>
+
+
+            <p>
+                Start tracking your spending by adding
+                your first expense.
+            </p>
+
+
+            <a href="/add-expense"
+               class="btn btn-primary">
+
+                Add Your First Expense
+
+            </a>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer">
+
+
+    <div class="footer-brand">
+
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
+
+    </div>
+
+
+    <p>
+        Built with Python, Flask, SQLite & Machine Learning
+    </p>
+
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+
+</footer>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* -----------------------------------------------------
+   LOADING SCREEN
+   ----------------------------------------------------- */
+
+window.addEventListener("load", function () {
+
+    const loader =
+        document.getElementById("page-loader");
+
+
+    setTimeout(function () {
+
+        if (loader) {
+
+            loader.classList.add(
+                "loader-hidden"
+            );
+
+        }
+
+    }, 350);
+
+});
+
+
+
+/* -----------------------------------------------------
+   TOAST AUTO DISMISS
+   ----------------------------------------------------- */
+
+setTimeout(function () {
+
+    const toasts =
+        document.querySelectorAll(".toast");
+
+
+    toasts.forEach(function (toast) {
+
+        toast.style.animation =
+            "toastOut 0.35s ease forwards";
+
+
+        setTimeout(function () {
+
+            toast.remove();
+
+        }, 350);
+
+    });
+
+}, 3500);
+
+
+</script>
+
+
+</body>
+
+</html>

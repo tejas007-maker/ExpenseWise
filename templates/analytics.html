@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="ExpenseWise spending analytics and financial insights">
+
+    <meta name="theme-color"
+          content="#172554">
+
+    <title>Analytics | ExpenseWise</title>
+
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- LOADING SCREEN -->
+
+<div id="page-loader">
+
+    <div class="loader-content">
+
+        <div class="loader-logo">₹</div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="brand">
+
+        <div class="brand-icon">
+            ₹
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                ExpenseWise
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Expense Tracker
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="/">
+            Dashboard
+        </a>
+
+        <a href="/add-expense">
+            Expenses
+        </a>
+
+        <a href="/analytics" class="active">
+            Analytics
+        </a>
+
+        <a href="/budget">
+            Budget
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- MAIN -->
+
+<main class="dashboard-container">
+
+
+    <!-- HERO -->
+
+    <section class="analytics-hero">
+
+        <div>
+
+            <span class="hero-badge analytics-badge">
+                ✦ FINANCIAL ANALYTICS
+            </span>
+
+            <h1>
+                Understand where
+                <span>your money goes.</span>
+            </h1>
+
+            <p>
+                Analyze your spending patterns and get
+                useful insights from your recorded expenses.
+            </p>
+
+        </div>
+
+
+        <div class="analytics-hero-icon">
+            📊
+        </div>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+
+    <section class="analytics-stats">
+
+
+        <div class="analytics-stat-card">
+
+            <div class="analytics-icon blue">
+                ₹
+            </div>
+
+            <div>
+
+                <span>
+                    TOTAL SPENT
+                </span>
+
+                <h2>
+                    ₹{{ "%.2f"|format(total_spent) }}
+                </h2>
+
+                <p>
+                    Across all transactions
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="analytics-stat-card">
+
+            <div class="analytics-icon purple">
+                🏆
+            </div>
+
+            <div>
+
+                <span>
+                    TOP CATEGORY
+                </span>
+
+                <h2>
+                    {{ highest_category }}
+                </h2>
+
+                <p>
+                    Highest spending category
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="analytics-stat-card">
+
+            <div class="analytics-icon orange">
+                ₹
+            </div>
+
+            <div>
+
+                <span>
+                    TOP CATEGORY SPENDING
+                </span>
+
+                <h2>
+                    ₹{{ "%.2f"|format(highest_amount) }}
+                </h2>
+
+                <p>
+                    {{ "%.1f"|format(highest_percentage) }}% of total spending
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="analytics-stat-card">
+
+            <div class="analytics-icon green">
+                %
+            </div>
+
+            <div>
+
+                <span>
+                    BUDGET USED
+                </span>
+
+                <h2>
+                    {{ "%.1f"|format(budget_percentage) }}%
+                </h2>
+
+                <p>
+                    Monthly budget utilization
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHART + BUDGET -->
+
+    <section class="analytics-grid">
+
+
+        <div class="analytics-chart-card">
+
+            <div class="analytics-section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        SPENDING BREAKDOWN
+                    </span>
+
+                    <h2>
+                        Category Analysis
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            {% if category_totals %}
+
+            <div class="chart-area">
+
+                <canvas id="expenseChart"></canvas>
+
+            </div>
+
+            {% else %}
+
+            <div class="analytics-empty">
+
+                <div class="empty-icon">
+                    📊
+                </div>
+
+                <h3>
+                    No spending data yet
+                </h3>
+
+                <p>
+                    Add some expenses to see your spending analysis.
+                </p>
+
+                <a href="/add-expense"
+                   class="btn analytics-button">
+
+                    Add Expense
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="analytics-budget-card">
+
+            <span class="section-label">
+                BUDGET HEALTH
+            </span>
+
+            <h2>
+                Monthly Budget
+            </h2>
+
+            <p>
+                Your current spending compared
+                with your monthly budget.
+            </p>
+
+
+            <div class="large-percentage">
+
+                {{ "%.0f"|format(budget_percentage) }}%
+
+            </div>
+
+            <span class="percentage-label">
+                Budget utilized
+            </span>
+
+
+            <div class="analytics-progress">
+
+                <div
+                    class="analytics-progress-bar"
+                    style="width: {{ [budget_percentage, 100]|min }}%;">
+
+                </div>
+
+            </div>
+
+
+            {% if budget_percentage >= 100 %}
+
+            <div class="budget-message danger">
+                ⚠ Budget limit exceeded.
+            </div>
+
+            {% elif budget_percentage >= 80 %}
+
+            <div class="budget-message warning">
+                ⚠ You are approaching your budget limit.
+            </div>
+
+            {% else %}
+
+            <div class="budget-message success">
+                ✓ Your spending is currently within budget.
+            </div>
+
+            {% endif %}
+
+
+            <a href="/budget"
+               class="analytics-outline-button">
+
+                Manage Budget →
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORY BREAKDOWN -->
+
+    <section class="category-card">
+
+        <div class="analytics-section-header">
+
+            <div>
+
+                <span class="section-label">
+                    CATEGORY DETAILS
+                </span>
+
+                <h2>
+                    Spending by Category
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        {% if category_totals %}
+
+        <div class="category-list">
+
+            {% for category, amount in category_totals.items() %}
+
+                {% if total_spent > 0 %}
+
+                    {% set percentage =
+                        (amount / total_spent) * 100
+                    %}
+
+                {% else %}
+
+                    {% set percentage = 0 %}
+
+                {% endif %}
+
+
+                <div class="category-row">
+
+                    <div class="category-information">
+
+                        <div class="category-color-dot">
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ category }}
+                            </strong>
+
+                            <span>
+                                {{ "%.1f"|format(percentage) }}%
+                                of total spending
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="category-amount">
+
+                        ₹{{ "%.2f"|format(amount) }}
+
+                    </div>
+
+                </div>
+
+
+                <div class="category-progress">
+
+                    <div
+                        class="category-progress-fill"
+                        style="width: {{ percentage }}%;">
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="analytics-empty small">
+
+            <h3>
+                No categories available
+            </h3>
+
+            <p>
+                Your category breakdown will appear here
+                after adding expenses.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- SMART INSIGHTS -->
+
+    <section class="insights-card">
+
+        <div class="insights-heading">
+
+            <div class="insight-main-icon">
+                ✦
+            </div>
+
+            <div>
+
+                <span class="section-label">
+                    AI-ASSISTED INSIGHTS
+                </span>
+
+                <h2>
+                    Smart Spending Insights
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="insight-items">
+
+
+            {% if not category_totals %}
+
+            <div class="insight-item">
+
+                <div class="insight-icon">
+                    💡
+                </div>
+
+                <div>
+
+                    <strong>
+                        Start tracking your expenses
+                    </strong>
+
+                    <p>
+                        Add your daily expenses to unlock
+                        personalized spending insights.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% else %}
+
+
+            <div class="insight-item">
+
+                <div class="insight-icon blue-insight">
+                    📊
+                </div>
+
+                <div>
+
+                    <strong>
+                        Highest spending category
+                    </strong>
+
+                    <p>
+                        Your highest spending category is
+                        <b>{{ highest_category }}</b>,
+                        accounting for
+                        <b>{{ "%.1f"|format(highest_percentage) }}%</b>
+                        of your total spending.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="insight-item">
+
+                <div class="insight-icon green-insight">
+                    💰
+                </div>
+
+                <div>
+
+                    <strong>
+                        Budget utilization
+                    </strong>
+
+                    <p>
+                        You have used
+                        <b>{{ "%.1f"|format(budget_percentage) }}%</b>
+                        of your monthly budget.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if budget_percentage >= 80 %}
+
+            <div class="insight-item">
+
+                <div class="insight-icon orange-insight">
+                    ⚠
+                </div>
+
+                <div>
+
+                    <strong>
+                        Watch your spending
+                    </strong>
+
+                    <p>
+                        Your spending is approaching
+                        the configured monthly budget.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <div class="insight-item">
+
+                <div class="insight-icon purple-insight">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        Spending is under control
+                    </strong>
+
+                    <p>
+                        Your current spending is below
+                        80% of your monthly budget.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
+    </div>
+
+    <p>
+        Built with Python, Flask, SQLite & Machine Learning
+    </p>
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+</footer>
+
+
+<!-- LOADER SCRIPT -->
+
+<script>
+
+window.addEventListener("load", function () {
+
+    const loader =
+        document.getElementById("page-loader");
+
+    setTimeout(function () {
+
+        if (loader) {
+            loader.classList.add("loader-hidden");
+        }
+
+    }, 350);
+
+});
+
+</script>
+
+
+<!-- CHART -->
+
+{% if category_totals %}
+
+<script>
+
+const categories =
+    {{ category_totals.keys() | list | tojson }};
+
+const amounts =
+    {{ category_totals.values() | list | tojson }};
+
+const ctx =
+    document.getElementById("expenseChart");
+
+
+new Chart(ctx, {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: categories,
+
+        datasets: [
+
+            {
+
+                data: amounts,
+
+                borderWidth: 0,
+
+                hoverOffset: 8
+
+            }
+
+        ]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        cutout: "68%",
+
+        plugins: {
+
+            legend: {
+
+                position: "bottom",
+
+                labels: {
+
+                    padding: 20,
+
+                    usePointStyle: true,
+
+                    font: {
+
+                        family: "Inter",
+
+                        size: 12
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endif %}
+
+
+</body>
+
+</html>

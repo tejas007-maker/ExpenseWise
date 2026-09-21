@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Manage your monthly budget with ExpenseWise">
+
+    <meta name="theme-color"
+          content="#172554">
+
+    <title>Budget | ExpenseWise</title>
+
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- LOADING SCREEN -->
+
+<div id="page-loader">
+
+    <div class="loader-content">
+
+        <div class="loader-logo">₹</div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="brand">
+
+        <div class="brand-icon">
+            ₹
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                ExpenseWise
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Expense Tracker
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="/">
+            Dashboard
+        </a>
+
+        <a href="/add-expense">
+            Expenses
+        </a>
+
+        <a href="/analytics">
+            Analytics
+        </a>
+
+        <a href="/budget" class="active">
+            Budget
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- MAIN -->
+
+<main class="form-page">
+
+
+    <section class="form-page-heading">
+
+        <div>
+
+            <span class="section-label">
+                FINANCIAL PLANNING
+            </span>
+
+            <h1>
+                Manage your budget
+            </h1>
+
+            <p>
+                Set a monthly spending limit and keep
+                your expenses under control.
+            </p>
+
+        </div>
+
+
+        <div class="form-heading-icon">
+            ₹
+        </div>
+
+    </section>
+
+
+    <section class="expense-form-layout">
+
+
+        <!-- BUDGET FORM -->
+
+        <div class="form-card">
+
+
+            <div class="form-card-header">
+
+                <div>
+
+                    <span class="section-label">
+                        MONTHLY BUDGET
+                    </span>
+
+                    <h2>
+                        Budget settings
+                    </h2>
+
+                </div>
+
+
+                <div class="secure-badge">
+                    ✓ Saved locally
+                </div>
+
+            </div>
+
+
+            {% if error %}
+
+            <div class="form-error">
+
+                <span>!</span>
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+
+                <div class="form-group">
+
+                    <label for="budget">
+                        Monthly budget
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ₹
+                        </span>
+
+                        <input
+                            type="number"
+                            id="budget"
+                            name="budget"
+                            value="{{ current_budget }}"
+                            min="1"
+                            step="0.01"
+                            placeholder="10000"
+                            required>
+
+                    </div>
+
+                    <small>
+                        Set the maximum amount you plan to
+                        spend each month.
+                    </small>
+
+                </div>
+
+
+                <div class="ai-category-box">
+
+                    <div class="ai-category-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Budget monitoring
+                        </strong>
+
+                        <p>
+                            ExpenseWise will calculate your
+                            budget utilization automatically.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="/"
+                       class="cancel-button">
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="submit-button">
+
+                        <span>
+                            Save Budget
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- INFO -->
+
+        <aside class="expense-info-card">
+
+
+            <div class="info-icon">
+                🎯
+            </div>
+
+
+            <span class="section-label">
+                SMART BUDGETING
+            </span>
+
+
+            <h2>
+                Plan today. Spend smarter.
+            </h2>
+
+
+            <p>
+                A clear spending limit helps you understand
+                your financial habits and avoid unnecessary
+                overspending.
+            </p>
+
+
+            <div class="info-divider">
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Monthly spending limit
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Automatic utilization tracking
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Budget status indicators
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Analytics integration
+                </span>
+
+            </div>
+
+
+        </aside>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
+    </div>
+
+    <p>
+        Built with Python, Flask, SQLite & Machine Learning
+    </p>
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+</footer>
+
+
+<script>
+
+window.addEventListener("load", function () {
+
+    const loader =
+        document.getElementById("page-loader");
+
+    setTimeout(function () {
+
+        if (loader) {
+            loader.classList.add("loader-hidden");
+        }
+
+    }, 350);
+
+});
+
+</script>
+
+
+</body>
+
+</html>

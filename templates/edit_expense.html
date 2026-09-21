@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Edit your ExpenseWise transaction">
+
+    <meta name="theme-color"
+          content="#172554">
+
+    <title>Edit Expense | ExpenseWise</title>
+
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- LOADING SCREEN -->
+
+<div id="page-loader">
+
+    <div class="loader-content">
+
+        <div class="loader-logo">₹</div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="brand">
+
+        <div class="brand-icon">
+            ₹
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                ExpenseWise
+            </div>
+
+            <div class="brand-subtitle">
+                Smart Expense Tracker
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="/">
+            Dashboard
+        </a>
+
+        <a href="/add-expense" class="active">
+            Expenses
+        </a>
+
+        <a href="/analytics">
+            Analytics
+        </a>
+
+        <a href="/budget">
+            Budget
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- MAIN -->
+
+<main class="form-page">
+
+
+    <section class="form-page-heading">
+
+        <div>
+
+            <span class="section-label">
+                TRANSACTION MANAGEMENT
+            </span>
+
+            <h1>
+                Edit expense
+            </h1>
+
+            <p>
+                Update the details of your recorded transaction.
+            </p>
+
+        </div>
+
+
+        <div class="form-heading-icon">
+            ✎
+        </div>
+
+    </section>
+
+
+    <section class="expense-form-layout">
+
+
+        <!-- FORM -->
+
+        <div class="form-card">
+
+
+            <div class="form-card-header">
+
+                <div>
+
+                    <span class="section-label">
+                        UPDATE DETAILS
+                    </span>
+
+                    <h2>
+                        Expense information
+                    </h2>
+
+                </div>
+
+
+                <div class="secure-badge">
+                    ✓ Local data
+                </div>
+
+            </div>
+
+
+            {% if error %}
+
+            <div class="form-error">
+
+                <span>!</span>
+
+                {{ error }}
+
+            </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✎
+                        </span>
+
+                        <input
+                            type="text"
+                            id="description"
+                            name="description"
+                            value="{{ expense.description }}"
+                            maxlength="200"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        Amount
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ₹
+                        </span>
+
+                        <input
+                            type="number"
+                            id="amount"
+                            name="amount"
+                            value="{{ expense.amount }}"
+                            min="0.01"
+                            step="0.01"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            #
+                        </span>
+
+                        <select
+                            id="category"
+                            name="category"
+                            required>
+
+                            <option value="Food"
+                                {% if expense.category == "Food" %}
+                                selected
+                                {% endif %}>
+                                Food
+                            </option>
+
+                            <option value="Travel"
+                                {% if expense.category == "Travel" %}
+                                selected
+                                {% endif %}>
+                                Travel
+                            </option>
+
+                            <option value="Shopping"
+                                {% if expense.category == "Shopping" %}
+                                selected
+                                {% endif %}>
+                                Shopping
+                            </option>
+
+                            <option value="College"
+                                {% if expense.category == "College" %}
+                                selected
+                                {% endif %}>
+                                College
+                            </option>
+
+                            <option value="Entertainment"
+                                {% if expense.category == "Entertainment" %}
+                                selected
+                                {% endif %}>
+                                Entertainment
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="date">
+                        Date
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📅
+                        </span>
+
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            value="{{ expense.date }}"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="ai-category-box">
+
+                    <div class="ai-category-icon">
+                        ✦
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Transaction management
+                        </strong>
+
+                        <p>
+                            Review the information before saving
+                            your updated expense.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="/"
+                       class="cancel-button">
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="submit-button">
+
+                        <span>
+                            Save Changes
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- INFO -->
+
+        <aside class="expense-info-card">
+
+
+            <div class="info-icon">
+                ✎
+            </div>
+
+
+            <span class="section-label">
+                EDIT TRANSACTION
+            </span>
+
+
+            <h2>
+                Keep your records accurate.
+            </h2>
+
+
+            <p>
+                Updating your transactions keeps your
+                dashboard and analytics accurate.
+            </p>
+
+
+            <div class="info-divider">
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Update description
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Correct amount
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Change category
+                </span>
+
+            </div>
+
+
+            <div class="info-feature">
+
+                <div>✓</div>
+
+                <span>
+                    Update transaction date
+                </span>
+
+            </div>
+
+
+        </aside>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
+    </div>
+
+    <p>
+        Built with Python, Flask, SQLite & Machine Learning
+    </p>
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+</footer>
+
+
+<script>
+
+window.addEventListener("load", function () {
+
+    const loader =
+        document.getElementById("page-loader");
+
+    setTimeout(function () {
+
+        if (loader) {
+            loader.classList.add("loader-hidden");
+        }
+
+    }, 350);
+
+});
+
+</script>
+
+
+</body>
+
+</html>
