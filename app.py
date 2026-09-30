@@ -82,9 +82,6 @@ else:
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-
-# Connection health check
-
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True
 }
@@ -141,7 +138,6 @@ def load_user(user_id):
 # =========================================================
 # DATABASE MODELS
 # =========================================================
-
 
 class User(UserMixin, db.Model):
 
@@ -234,51 +230,31 @@ class Budget(db.Model):
 
 def prepare_database():
 
-    # Create tables if they do not exist
-
     db.create_all()
-
-
-    # -----------------------------------------------------
-    # Legacy SQLite migration
-    # -----------------------------------------------------
-    #
-    # This section runs ONLY for local SQLite.
-    #
-    # PostgreSQL on Render does not need this because
-    # the tables are created fresh using db.create_all().
-    # -----------------------------------------------------
 
     database_uri = app.config[
         "SQLALCHEMY_DATABASE_URI"
     ]
 
-
+    # PostgreSQL does not need legacy migration
     if not database_uri.startswith("sqlite"):
 
         return
-
-
-    # Flask-SQLAlchemy stores relative SQLite DB
-    # inside the instance folder.
 
     database_path = os.path.join(
         app.instance_path,
         "expensewise.db"
     )
 
-
     if not os.path.exists(database_path):
 
         return
-
 
     connection = sqlite3.connect(
         database_path
     )
 
     cursor = connection.cursor()
-
 
     # -----------------------------------------------------
     # EXPENSE USER_ID
@@ -295,7 +271,6 @@ def prepare_database():
             for row in cursor.fetchall()
         ]
 
-
         if "user_id" not in expense_columns:
 
             cursor.execute(
@@ -308,7 +283,6 @@ def prepare_database():
     except sqlite3.OperationalError:
 
         pass
-
 
     # -----------------------------------------------------
     # BUDGET USER_ID
@@ -325,7 +299,6 @@ def prepare_database():
             for row in cursor.fetchall()
         ]
 
-
         if "user_id" not in budget_columns:
 
             cursor.execute(
@@ -338,7 +311,6 @@ def prepare_database():
     except sqlite3.OperationalError:
 
         pass
-
 
     connection.commit()
 
@@ -362,11 +334,9 @@ def get_budget():
 
         return 10000
 
-
     budget = Budget.query.filter_by(
         user_id=current_user.id
     ).first()
-
 
     if budget is None:
 
@@ -378,7 +348,6 @@ def get_budget():
         db.session.add(budget)
 
         db.session.commit()
-
 
     return budget.amount
 
@@ -398,7 +367,6 @@ def register():
         return redirect(
             url_for("home")
         )
-
 
     if request.method == "POST":
 
@@ -422,11 +390,6 @@ def register():
             ""
         )
 
-
-        # -------------------------------------------------
-        # VALIDATION
-        # -------------------------------------------------
-
         if not name:
 
             flash(
@@ -437,7 +400,6 @@ def register():
             return render_template(
                 "register.html"
             )
-
 
         if not email:
 
@@ -450,7 +412,6 @@ def register():
                 "register.html"
             )
 
-
         if not password:
 
             flash(
@@ -461,7 +422,6 @@ def register():
             return render_template(
                 "register.html"
             )
-
 
         if len(password) < 6:
 
@@ -474,7 +434,6 @@ def register():
                 "register.html"
             )
 
-
         if password != confirm_password:
 
             flash(
@@ -486,15 +445,9 @@ def register():
                 "register.html"
             )
 
-
-        # -------------------------------------------------
-        # CHECK EXISTING USER
-        # -------------------------------------------------
-
         existing_user = User.query.filter_by(
             email=email
         ).first()
-
 
         if existing_user:
 
@@ -507,60 +460,37 @@ def register():
                 "register.html"
             )
 
-
-        # -------------------------------------------------
-        # CREATE USER
-        # -------------------------------------------------
-
         password_hash = generate_password_hash(
             password
         )
 
-
         new_user = User(
-
             name=name,
-
             email=email,
-
             password_hash=password_hash
-
         )
-
 
         db.session.add(new_user)
 
         db.session.commit()
 
-
-        # -------------------------------------------------
-        # DEFAULT BUDGET
-        # -------------------------------------------------
-
         default_budget = Budget(
-
             amount=10000,
-
             user_id=new_user.id
-
         )
-
 
         db.session.add(default_budget)
 
         db.session.commit()
-
 
         flash(
             "Account created successfully! Please login.",
             "success"
         )
 
-
         return redirect(
             url_for("login")
         )
-
 
     return render_template(
         "register.html"
@@ -583,7 +513,6 @@ def login():
             url_for("home")
         )
 
-
     if request.method == "POST":
 
         email = request.form.get(
@@ -601,15 +530,9 @@ def login():
             == "on"
         )
 
-
-        # -------------------------------------------------
-        # FIND USER
-        # -------------------------------------------------
-
         user = User.query.filter_by(
             email=email
         ).first()
-
 
         if user is None:
 
@@ -621,11 +544,6 @@ def login():
             return render_template(
                 "login.html"
             )
-
-
-        # -------------------------------------------------
-        # PASSWORD CHECK
-        # -------------------------------------------------
 
         if not check_password_hash(
             user.password_hash,
@@ -641,27 +559,19 @@ def login():
                 "login.html"
             )
 
-
-        # -------------------------------------------------
-        # LOGIN
-        # -------------------------------------------------
-
         login_user(
             user,
             remember=remember
         )
-
 
         flash(
             f"Welcome back, {user.name}!",
             "success"
         )
 
-
         return redirect(
             url_for("home")
         )
-
 
     return render_template(
         "login.html"
@@ -678,12 +588,10 @@ def logout():
 
     logout_user()
 
-
     flash(
         "You have been logged out successfully.",
         "success"
     )
-
 
     return redirect(
         url_for("login")
@@ -704,20 +612,16 @@ def home():
         Expense.id.desc()
     ).all()
 
-
     total_spent = sum(
         expense.amount
         for expense in expenses
     )
 
-
     monthly_budget = get_budget()
-
 
     remaining_budget = (
         monthly_budget - total_spent
     )
-
 
     if monthly_budget > 0:
 
@@ -729,7 +633,6 @@ def home():
     else:
 
         budget_percentage = 0
-
 
     if budget_percentage >= 100:
 
@@ -743,23 +646,14 @@ def home():
 
         budget_status = "Within Budget"
 
-
     return render_template(
-
         "index.html",
-
         expenses=expenses,
-
         total_spent=total_spent,
-
         monthly_budget=monthly_budget,
-
         remaining_budget=remaining_budget,
-
         budget_percentage=budget_percentage,
-
         budget_status=budget_status
-
     )
 
 
@@ -778,21 +672,16 @@ def budget():
         user_id=current_user.id
     ).first()
 
-
     if user_budget is None:
 
         user_budget = Budget(
-
             amount=10000,
-
             user_id=current_user.id
-
         )
 
         db.session.add(user_budget)
 
         db.session.commit()
-
 
     if request.method == "POST":
 
@@ -801,13 +690,11 @@ def budget():
             ""
         )
 
-
         try:
 
             budget_value = float(
                 budget_value
             )
-
 
             if budget_value <= 0:
 
@@ -820,7 +707,6 @@ def budget():
                     "budget.html",
                     current_budget=user_budget.amount
                 )
-
 
         except (
             TypeError,
@@ -837,29 +723,22 @@ def budget():
                 current_budget=user_budget.amount
             )
 
-
         user_budget.amount = budget_value
 
         db.session.commit()
-
 
         flash(
             "Budget updated successfully!",
             "success"
         )
 
-
         return redirect(
             url_for("home")
         )
 
-
     return render_template(
-
         "budget.html",
-
         current_budget=user_budget.amount
-
     )
 
 
@@ -891,7 +770,6 @@ def add_expense():
             ""
         )
 
-
         # -------------------------------------------------
         # DESCRIPTION
         # -------------------------------------------------
@@ -907,7 +785,6 @@ def add_expense():
                 "add_expense.html"
             )
 
-
         # -------------------------------------------------
         # AMOUNT
         # -------------------------------------------------
@@ -915,7 +792,6 @@ def add_expense():
         try:
 
             amount = float(amount)
-
 
             if amount <= 0:
 
@@ -927,7 +803,6 @@ def add_expense():
                 return render_template(
                     "add_expense.html"
                 )
-
 
         except (
             TypeError,
@@ -942,7 +817,6 @@ def add_expense():
             return render_template(
                 "add_expense.html"
             )
-
 
         # -------------------------------------------------
         # DATE
@@ -959,7 +833,6 @@ def add_expense():
                 "add_expense.html"
             )
 
-
         # -------------------------------------------------
         # AI CATEGORY
         # -------------------------------------------------
@@ -968,25 +841,17 @@ def add_expense():
             description
         )
 
-
         # -------------------------------------------------
         # CREATE EXPENSE
         # -------------------------------------------------
 
         new_expense = Expense(
-
             description=description,
-
             amount=amount,
-
             category=category,
-
             date=date,
-
             user_id=current_user.id
-
         )
-
 
         db.session.add(
             new_expense
@@ -994,17 +859,30 @@ def add_expense():
 
         db.session.commit()
 
+        # =================================================
+        # BUDGET EMAIL NOTIFICATION
+        # =================================================
+
+        try:
+
+            from notify_budget import check_budgets
+
+            check_budgets()
+
+        except Exception as error:
+
+            print(
+                f"Budget notification check failed: {error}"
+            )
 
         flash(
             f"Expense added successfully! Category: {category}",
             "success"
         )
 
-
         return redirect(
             url_for("home")
         )
-
 
     return render_template(
         "add_expense.html"
@@ -1022,13 +900,9 @@ def add_expense():
 def delete_expense(id):
 
     expense = Expense.query.filter_by(
-
         id=id,
-
         user_id=current_user.id
-
     ).first_or_404()
-
 
     db.session.delete(
         expense
@@ -1036,12 +910,10 @@ def delete_expense(id):
 
     db.session.commit()
 
-
     flash(
         "Expense deleted successfully!",
         "success"
     )
-
 
     return redirect(
         url_for("home")
@@ -1060,13 +932,9 @@ def delete_expense(id):
 def edit_expense(id):
 
     expense = Expense.query.filter_by(
-
         id=id,
-
         user_id=current_user.id
-
     ).first_or_404()
-
 
     if request.method == "POST":
 
@@ -1085,7 +953,6 @@ def edit_expense(id):
             ""
         )
 
-
         # -------------------------------------------------
         # DESCRIPTION
         # -------------------------------------------------
@@ -1098,13 +965,9 @@ def edit_expense(id):
             )
 
             return render_template(
-
                 "edit_expense.html",
-
                 expense=expense
-
             )
-
 
         # -------------------------------------------------
         # AMOUNT
@@ -1114,7 +977,6 @@ def edit_expense(id):
 
             amount = float(amount)
 
-
             if amount <= 0:
 
                 flash(
@@ -1123,13 +985,9 @@ def edit_expense(id):
                 )
 
                 return render_template(
-
                     "edit_expense.html",
-
                     expense=expense
-
                 )
-
 
         except (
             TypeError,
@@ -1142,13 +1000,9 @@ def edit_expense(id):
             )
 
             return render_template(
-
                 "edit_expense.html",
-
                 expense=expense
-
             )
-
 
         # -------------------------------------------------
         # DATE
@@ -1162,13 +1016,9 @@ def edit_expense(id):
             )
 
             return render_template(
-
                 "edit_expense.html",
-
                 expense=expense
-
             )
-
 
         # -------------------------------------------------
         # AI CATEGORY
@@ -1177,7 +1027,6 @@ def edit_expense(id):
         category = predict_category(
             description
         )
-
 
         # -------------------------------------------------
         # UPDATE
@@ -1191,27 +1040,20 @@ def edit_expense(id):
 
         expense.date = date
 
-
         db.session.commit()
-
 
         flash(
             "Expense updated successfully!",
             "success"
         )
 
-
         return redirect(
             url_for("home")
         )
 
-
     return render_template(
-
         "edit_expense.html",
-
         expense=expense
-
     )
 
 
@@ -1227,13 +1069,11 @@ def analytics():
         user_id=current_user.id
     ).all()
 
-
     # -----------------------------------------------------
     # CATEGORY TOTALS
     # -----------------------------------------------------
 
     category_totals = {}
-
 
     for expense in expenses:
 
@@ -1243,24 +1083,18 @@ def analytics():
                 expense.category
             ] = 0
 
-
         category_totals[
             expense.category
         ] += expense.amount
-
 
     # -----------------------------------------------------
     # TOTAL
     # -----------------------------------------------------
 
     total_spent = sum(
-
         expense.amount
-
         for expense in expenses
-
     )
-
 
     # -----------------------------------------------------
     # BUDGET
@@ -1268,11 +1102,9 @@ def analytics():
 
     monthly_budget = get_budget()
 
-
     remaining_budget = (
         monthly_budget - total_spent
     )
-
 
     # -----------------------------------------------------
     # HIGHEST CATEGORY
@@ -1282,21 +1114,16 @@ def analytics():
 
     highest_amount = 0
 
-
     if category_totals:
 
         highest_category = max(
-
             category_totals,
-
             key=category_totals.get
-
         )
 
         highest_amount = category_totals[
             highest_category
         ]
-
 
     # -----------------------------------------------------
     # HIGHEST CATEGORY %
@@ -1305,17 +1132,13 @@ def analytics():
     if total_spent > 0:
 
         highest_percentage = (
-
             highest_amount /
-
             total_spent
-
         ) * 100
 
     else:
 
         highest_percentage = 0
-
 
     # -----------------------------------------------------
     # BUDGET %
@@ -1324,38 +1147,24 @@ def analytics():
     if monthly_budget > 0:
 
         budget_percentage = (
-
             total_spent /
-
             monthly_budget
-
         ) * 100
 
     else:
 
         budget_percentage = 0
 
-
     return render_template(
-
         "analytics.html",
-
         category_totals=category_totals,
-
         total_spent=total_spent,
-
         monthly_budget=monthly_budget,
-
         remaining_budget=remaining_budget,
-
         highest_category=highest_category,
-
         highest_amount=highest_amount,
-
         highest_percentage=highest_percentage,
-
         budget_percentage=budget_percentage
-
     )
 
 
