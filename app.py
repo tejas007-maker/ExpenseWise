@@ -1446,36 +1446,21 @@ def robots_txt():
 @app.route("/sitemap.xml")
 def sitemap_xml():
 
-    return """<?xml version="1.0" encoding="UTF-8"?>
+    sitemap = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
     <url>
         <loc>https://expensewise-aehc.onrender.com/</loc>
     </url>
-
     <url>
         <loc>https://expensewise-aehc.onrender.com/login</loc>
     </url>
-
     <url>
         <loc>https://expensewise-aehc.onrender.com/register</loc>
     </url>
+</urlset>"""
 
-    <url>
-        <loc>https://expensewise-aehc.onrender.com/add-expense</loc>
-    </url>
-
-    <url>
-        <loc>https://expensewise-aehc.onrender.com/analytics</loc>
-    </url>
-
-    <url>
-        <loc>https://expensewise-aehc.onrender.com/budget</loc>
-    </url>
-
-</urlset>
-""", 200, {
-        "Content-Type": "application/xml"
+    return sitemap, 200, {
+        "Content-Type": "application/xml; charset=utf-8"
     }
 
 # =========================================================
