@@ -5,31 +5,16 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="Edit your ExpenseWise transaction">
-
-    <meta name="theme-color"
-          content="#172554">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Edit Expense | ExpenseWise</title>
+
+    <meta name="description"
+          content="Edit your expenses with ExpenseWise Smart Student Expense Tracker.">
 
     <link rel="icon"
           type="image/svg+xml"
           href="{{ url_for('static', filename='favicon.svg') }}">
-
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
-
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
@@ -40,470 +25,577 @@
 <body>
 
 
-<!-- LOADING SCREEN -->
+<!-- ================= LOADING SCREEN ================= -->
 
-<div id="page-loader">
+<div id="pageLoader" class="page-loader">
 
-    <div class="loader-content">
+    <div class="loader-spinner"></div>
 
-        <div class="loader-logo">₹</div>
-
-        <div class="loader-title">
-            ExpenseWise
-        </div>
-
-        <div class="loader-subtitle">
-            Smart Student Expense Tracker
-        </div>
-
-        <div class="loader-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-    </div>
+    <p>Loading ExpenseWise...</p>
 
 </div>
 
 
-<!-- NAVBAR -->
+
+<!-- ================= NAVBAR ================= -->
 
 <nav class="navbar">
 
-    <a href="/" class="brand">
+    <div class="nav-container">
 
-        <div class="brand-icon">
-            ₹
-        </div>
 
-        <div>
+        <!-- BRAND -->
 
-            <div class="brand-name">
-                ExpenseWise
+        <a href="/" class="brand">
+
+            <span class="brand-icon">
+                💰
+            </span>
+
+            <div>
+
+                <div class="brand-name">
+                    ExpenseWise
+                </div>
+
+                <div class="brand-tagline">
+                    Smart Student Expense Tracker
+                </div>
+
             </div>
 
-            <div class="brand-subtitle">
-                Smart Expense Tracker
-            </div>
+        </a>
+
+
+
+        <!-- NAVIGATION -->
+
+        <div class="nav-links">
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/add-expense" class="active">
+                Expenses
+            </a>
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+            <a href="/budget">
+                Budget
+            </a>
+
+
+            <!-- USER -->
+
+            <span class="user-welcome">
+                👤 {{ current_user.name }}
+            </span>
+
+
+            <!-- LOGOUT -->
+
+            <a href="/logout" class="logout-link">
+                Logout
+            </a>
 
         </div>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="/">
-            Dashboard
-        </a>
-
-        <a href="/add-expense" class="active">
-            Expenses
-        </a>
-
-        <a href="/analytics">
-            Analytics
-        </a>
-
-        <a href="/budget">
-            Budget
-        </a>
 
     </div>
 
 </nav>
 
 
-<!-- MAIN -->
 
-<main class="form-page">
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="page-container">
 
 
-    <section class="form-page-heading">
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
 
         <div>
 
-            <span class="section-label">
-                TRANSACTION MANAGEMENT
-            </span>
-
             <h1>
-                Edit expense
+                Edit Expense
             </h1>
 
             <p>
-                Update the details of your recorded transaction.
+                Update your expense details below.
             </p>
 
         </div>
 
 
-        <div class="form-heading-icon">
-            ✎
+        <a href="/" class="secondary-btn">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+
+
+    <!-- ================= FORM CARD ================= -->
+
+    <div class="form-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="form-card-header">
+
+            <div class="form-icon">
+                ✏️
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Expense Details
+                </h2>
+
+                <p>
+                    Modify your expense information.
+                </p>
+
+            </div>
+
         </div>
 
-    </section>
 
 
-    <section class="expense-form-layout">
+        <!-- ================= FLASH MESSAGES ================= -->
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
-        <!-- FORM -->
+            {% if messages %}
 
-        <div class="form-card">
+                <div class="auth-messages">
 
+                    {% for category, message in messages %}
 
-            <div class="form-card-header">
+                        <div
+                            class="
+                            {% if category == 'success' %}
+                                auth-message-success
+                            {% else %}
+                                auth-message-error
+                            {% endif %}
+                            "
+                        >
 
-                <div>
+                            {{ message }}
 
-                    <span class="section-label">
-                        UPDATE DETAILS
-                    </span>
+                        </div>
 
-                    <h2>
-                        Expense information
-                    </h2>
+                    {% endfor %}
 
                 </div>
-
-
-                <div class="secure-badge">
-                    ✓ Local data
-                </div>
-
-            </div>
-
-
-            {% if error %}
-
-            <div class="form-error">
-
-                <span>!</span>
-
-                {{ error }}
-
-            </div>
 
             {% endif %}
 
-
-            <form method="POST">
-
-
-                <div class="form-group">
-
-                    <label for="description">
-                        Description
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            ✎
-                        </span>
-
-                        <input
-                            type="text"
-                            id="description"
-                            name="description"
-                            value="{{ expense.description }}"
-                            maxlength="200"
-                            required>
-
-                    </div>
-
-                </div>
+        {% endwith %}
 
 
-                <div class="form-group">
 
-                    <label for="amount">
-                        Amount
-                    </label>
+        <!-- ================= EDIT FORM ================= -->
 
-                    <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            ₹
-                        </span>
-
-                        <input
-                            type="number"
-                            id="amount"
-                            name="amount"
-                            value="{{ expense.amount }}"
-                            min="0.01"
-                            step="0.01"
-                            required>
-
-                    </div>
-
-                </div>
+        <form
+            method="POST"
+            action="{{ url_for('edit_expense', id=expense.id) }}"
+            class="expense-form"
+            id="editExpenseForm"
+        >
 
 
-                <div class="form-group">
+            <!-- DESCRIPTION -->
 
-                    <label for="category">
-                        Category
-                    </label>
+            <div class="form-group">
 
-                    <div class="input-wrapper">
+                <label for="description">
+                    Expense Description
+                </label>
 
-                        <span class="input-icon">
-                            #
-                        </span>
 
-                        <select
-                            id="category"
-                            name="category"
-                            required>
+                <input
+                    type="text"
+                    id="description"
+                    name="description"
+                    value="{{ expense.description }}"
+                    placeholder="e.g. College canteen lunch"
+                    maxlength="200"
+                    required
+                >
 
-                            <option value="Food"
-                                {% if expense.category == "Food" %}
-                                selected
-                                {% endif %}>
-                                Food
-                            </option>
 
-                            <option value="Travel"
-                                {% if expense.category == "Travel" %}
-                                selected
-                                {% endif %}>
-                                Travel
-                            </option>
+                <small>
+                    Update what you spent money on.
+                </small>
 
-                            <option value="Shopping"
-                                {% if expense.category == "Shopping" %}
-                                selected
-                                {% endif %}>
-                                Shopping
-                            </option>
+            </div>
 
-                            <option value="College"
-                                {% if expense.category == "College" %}
-                                selected
-                                {% endif %}>
-                                College
-                            </option>
 
-                            <option value="Entertainment"
-                                {% if expense.category == "Entertainment" %}
-                                selected
-                                {% endif %}>
-                                Entertainment
-                            </option>
 
-                        </select>
+            <!-- AMOUNT -->
 
-                    </div>
+            <div class="form-group">
+
+                <label for="amount">
+                    Amount (₹)
+                </label>
+
+
+                <div class="amount-input-wrapper">
+
+                    <span class="currency-symbol">
+                        ₹
+                    </span>
+
+
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        value="{{ expense.amount }}"
+                        placeholder="0.00"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
 
                 </div>
 
 
-                <div class="form-group">
+                <small>
+                    Enter the updated amount.
+                </small>
 
-                    <label for="date">
-                        Date
-                    </label>
+            </div>
 
-                    <div class="input-wrapper">
 
-                        <span class="input-icon">
-                            📅
-                        </span>
 
-                        <input
-                            type="date"
-                            id="date"
-                            name="date"
-                            value="{{ expense.date }}"
-                            required>
+            <!-- DATE -->
 
-                    </div>
+            <div class="form-group">
 
+                <label for="date">
+                    Date
+                </label>
+
+
+                <!--
+                    IMPORTANT:
+                    expense.date is stored as a STRING
+                    in the current database.
+                    Therefore DO NOT use strftime().
+                -->
+
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="{{ expense.date }}"
+                    required
+                >
+
+
+                <small>
+                    Select the date of the expense.
+                </small>
+
+            </div>
+
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label for="category">
+                    Category
+                </label>
+
+
+                <input
+                    type="text"
+                    id="category"
+                    value="{{ expense.category }}"
+                    disabled
+                >
+
+
+                <small>
+                    Category is automatically handled by ExpenseWise.
+                </small>
+
+            </div>
+
+
+
+            <!-- AI INFORMATION -->
+
+            <div class="ai-info-box">
+
+
+                <div class="ai-info-icon">
+                    🤖
                 </div>
 
 
-                <div class="ai-category-box">
+                <div>
 
-                    <div class="ai-category-icon">
-                        ✦
-                    </div>
+                    <strong>
+                        Smart Categorization
+                    </strong>
 
-                    <div>
 
-                        <strong>
-                            Transaction management
-                        </strong>
-
-                        <p>
-                            Review the information before saving
-                            your updated expense.
-                        </p>
-
-                    </div>
+                    <p>
+                        ExpenseWise uses its AI classification
+                        model to categorize your expenses.
+                    </p>
 
                 </div>
 
-
-                <div class="form-actions">
-
-                    <a href="/"
-                       class="cancel-button">
-
-                        Cancel
-
-                    </a>
+            </div>
 
 
-                    <button
-                        type="submit"
-                        class="submit-button">
 
-                        <span>
-                            Save Changes
-                        </span>
+            <!-- ================= ACTION BUTTONS ================= -->
 
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </div>
+            <div class="form-actions">
 
 
-            </form>
+                <!-- CANCEL -->
+
+                <a
+                    href="/"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+
+                <!-- UPDATE -->
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="updateExpenseBtn"
+                >
+
+                    💾 Update Expense
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+
+    <!-- ================= TIPS ================= -->
+
+    <div class="tips-card">
+
+
+        <div class="tips-title">
+
+            💡 Editing Expense
 
         </div>
 
 
-        <!-- INFO -->
 
-        <aside class="expense-info-card">
-
-
-            <div class="info-icon">
-                ✎
-            </div>
+        <div class="tips-grid">
 
 
-            <span class="section-label">
-                EDIT TRANSACTION
-            </span>
+            <!-- TIP 1 -->
 
-
-            <h2>
-                Keep your records accurate.
-            </h2>
-
-
-            <p>
-                Updating your transactions keeps your
-                dashboard and analytics accurate.
-            </p>
-
-
-            <div class="info-divider">
-            </div>
-
-
-            <div class="info-feature">
-
-                <div>✓</div>
+            <div class="tip-item">
 
                 <span>
-                    Update description
+                    ✏️
                 </span>
+
+
+                <div>
+
+                    <strong>
+                        Update details
+                    </strong>
+
+
+                    <p>
+                        Change the description, amount or date
+                        whenever necessary.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <div class="info-feature">
 
-                <div>✓</div>
+            <!-- TIP 2 -->
+
+            <div class="tip-item">
 
                 <span>
-                    Correct amount
+                    🤖
                 </span>
+
+
+                <div>
+
+                    <strong>
+                        Smart category
+                    </strong>
+
+
+                    <p>
+                        ExpenseWise manages expense
+                        categorization automatically.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <div class="info-feature">
 
-                <div>✓</div>
+            <!-- TIP 3 -->
+
+            <div class="tip-item">
 
                 <span>
-                    Change category
+                    📊
                 </span>
+
+
+                <div>
+
+                    <strong>
+                        Analytics
+                    </strong>
+
+
+                    <p>
+                        Updated expenses will be reflected
+                        in your dashboard and analytics.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            <div class="info-feature">
+        </div>
 
-                <div>✓</div>
-
-                <span>
-                    Update transaction date
-                </span>
-
-            </div>
-
-
-        </aside>
-
-
-    </section>
+    </div>
 
 
 </main>
 
 
-<!-- FOOTER -->
+
+<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
 
-    <div class="footer-brand">
+    <div class="footer-content">
 
-        <strong>
-            ExpenseWise
-        </strong>
 
-        <span>
-            Smart Student Expense Tracker
-        </span>
+        <div>
+
+            <strong>
+                ExpenseWise
+            </strong>
+
+            <p>
+                Smart Student Expense Tracker
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <p>
+                Built with Flask, SQLite & AI
+            </p>
+
+        </div>
+
 
     </div>
-
-    <p>
-        Built with Python, Flask, SQLite & Machine Learning
-    </p>
-
-    <p class="copyright">
-        © 2026 ExpenseWise
-    </p>
 
 </footer>
 
 
+
+<!-- ================= JAVASCRIPT ================= -->
+
 <script>
 
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =========================================
+       UPDATE BUTTON LOADING
+       ========================================= */
+
+    const form =
+        document.getElementById("editExpenseForm");
+
+    const button =
+        document.getElementById("updateExpenseBtn");
+
+
+    if (form && button) {
+
+        form.addEventListener("submit", function () {
+
+            button.disabled = true;
+
+            button.innerHTML =
+                "⏳ Updating Expense...";
+
+        });
+
+    }
+
+
+
+    /* =========================================
+       PAGE LOADER
+       ========================================= */
 
     const loader =
-        document.getElementById("page-loader");
+        document.getElementById("pageLoader");
 
-    setTimeout(function () {
 
-        if (loader) {
-            loader.classList.add("loader-hidden");
-        }
+    if (loader) {
 
-    }, 350);
+        setTimeout(function () {
+
+            loader.classList.add("hidden");
+
+        }, 300);
+
+    }
 
 });
 

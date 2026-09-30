@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Login to ExpenseWise - Smart Student Expense Tracker">
+
+    <meta name="theme-color" content="#172554">
+
+    <title>Login | ExpenseWise</title>
+
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <a href="/" class="auth-brand">
+
+            <div class="auth-logo">
+                ₹
+            </div>
+
+            <div>
+                <div class="auth-brand-name">
+                    ExpenseWise
+                </div>
+
+                <div class="auth-brand-subtitle">
+                    Smart Student Expense Tracker
+                </div>
+            </div>
+
+        </a>
+
+
+        <div class="auth-heading">
+
+            <h1>Welcome Back</h1>
+
+            <p>
+                Login to manage your expenses and budget.
+            </p>
+
+        </div>
+
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="auth-messages">
+
+                    {% for category, message in messages %}
+
+                        <div class="auth-message auth-message-{{ category }}">
+
+                            <span>
+                                {% if category == "success" %}
+                                    ✓
+                                {% else %}
+                                    !
+                                {% endif %}
+                            </span>
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- Login Form -->
+
+        <form method="POST"
+              action="{{ url_for('login') }}"
+              class="auth-form">
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <label class="remember-option">
+
+                <input
+                    type="checkbox"
+                    name="remember"
+                >
+
+                <span>
+                    Remember me
+                </span>
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="auth-submit">
+                Login
+            </button>
+
+        </form>
+
+
+        <div class="auth-divider">
+            <span>OR</span>
+        </div>
+
+
+        <div class="auth-footer">
+
+            <p>
+                Don't have an account?
+                <a href="{{ url_for('register') }}">
+                    Create Account
+                </a>
+            </p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

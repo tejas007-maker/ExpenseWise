@@ -1,494 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="Add and categorize expenses with ExpenseWise">
-
-    <meta name="theme-color"
-          content="#172554">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Add Expense | ExpenseWise</title>
+    <meta name="description"
+          content="Add and categorize your expenses with ExpenseWise Smart Student Expense Tracker.">
 
-    <link rel="icon"
-          type="image/svg+xml"
+    <link rel="icon" type="image/svg+xml"
           href="{{ url_for('static', filename='favicon.svg') }}">
-
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
-
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
-
 </head>
-
 
 <body>
 
-
-<!-- LOADING SCREEN -->
-
-<div id="page-loader">
-
-    <div class="loader-content">
-
-        <div class="loader-logo">₹</div>
-
-        <div class="loader-title">
-            ExpenseWise
-        </div>
-
-        <div class="loader-subtitle">
-            Smart Student Expense Tracker
-        </div>
-
-        <div class="loader-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-    </div>
-
+<!-- Loading Screen -->
+<div id="pageLoader" class="page-loader">
+    <div class="loader-spinner"></div>
+    <p>Loading ExpenseWise...</p>
 </div>
 
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 
 <nav class="navbar">
 
-    <a href="/" class="brand">
+    <div class="nav-container">
 
-        <div class="brand-icon">
-            ₹
-        </div>
+        <a href="/" class="brand">
+            <span class="brand-icon">💰</span>
 
-        <div>
-
-            <div class="brand-name">
-                ExpenseWise
+            <div>
+                <div class="brand-name">ExpenseWise</div>
+                <div class="brand-tagline">Smart Student Expense Tracker</div>
             </div>
+        </a>
 
-            <div class="brand-subtitle">
-                Smart Expense Tracker
-            </div>
+
+        <div class="nav-links">
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/add-expense" class="active">
+                Expenses
+            </a>
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+            <a href="/budget">
+                Budget
+            </a>
+
+            <span class="user-welcome">
+                👤 {{ current_user.name }}
+            </span>
+
+            <a href="/logout" class="logout-link">
+                Logout
+            </a>
 
         </div>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="/">
-            Dashboard
-        </a>
-
-        <a href="/add-expense" class="active">
-            Expenses
-        </a>
-
-        <a href="/analytics">
-            Analytics
-        </a>
-
-        <a href="/budget">
-            Budget
-        </a>
 
     </div>
 
 </nav>
 
 
-<!-- MAIN -->
+<!-- ================= MAIN CONTENT ================= -->
 
-<main class="form-page">
+<main class="page-container">
 
-
-    <section class="form-page-heading">
+    <div class="page-header">
 
         <div>
-
-            <span class="section-label">
-                EXPENSE MANAGEMENT
-            </span>
-
-            <h1>
-                Add a new expense
-            </h1>
+            <h1>Add New Expense</h1>
 
             <p>
                 Record your spending and let ExpenseWise
-                automatically categorize it.
+                intelligently categorize it.
             </p>
+        </div>
+
+        <a href="/" class="secondary-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- ================= FORM CARD ================= -->
+
+    <div class="form-card">
+
+        <div class="form-card-header">
+
+            <div class="form-icon">
+                💸
+            </div>
+
+            <div>
+                <h2>Expense Details</h2>
+
+                <p>
+                    Enter the details of your expense below.
+                </p>
+            </div>
 
         </div>
 
 
-        <div class="form-heading-icon">
-            +
-        </div>
+        <!-- Flash Messages -->
 
-    </section>
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
+            {% if messages %}
 
-    <section class="expense-form-layout">
+                <div class="auth-messages">
 
+                    {% for category, message in messages %}
 
-        <!-- FORM -->
+                        <div class="
+                            {% if category == 'success' %}
+                                auth-message-success
+                            {% else %}
+                                auth-message-error
+                            {% endif %}
+                        ">
 
-        <div class="form-card">
+                            {{ message }}
 
+                        </div>
 
-            <div class="form-card-header">
-
-                <div>
-
-                    <span class="section-label">
-                        TRANSACTION DETAILS
-                    </span>
-
-                    <h2>
-                        Expense information
-                    </h2>
+                    {% endfor %}
 
                 </div>
-
-
-                <div class="secure-badge">
-                    ✓ Saved locally
-                </div>
-
-            </div>
-
-
-            {% if error %}
-
-            <div class="form-error">
-
-                <span>!</span>
-
-                {{ error }}
-
-            </div>
 
             {% endif %}
 
-
-            <form method="POST"
-                  action="/add-expense">
+        {% endwith %}
 
 
-                <div class="form-group">
+        <!-- Expense Form -->
 
-                    <label for="description">
-                        Description
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            ✎
-                        </span>
-
-                        <input
-                            type="text"
-                            id="description"
-                            name="description"
-                            placeholder="e.g. Lunch at college canteen"
-                            required
-                            maxlength="200">
-
-                    </div>
-
-                    <small>
-                        Describe what you spent money on.
-                    </small>
-
-                </div>
+        <form method="POST"
+              action="{{ url_for('add_expense') }}"
+              id="expenseForm"
+              class="expense-form">
 
 
-                <div class="form-group">
+            <!-- Description -->
 
-                    <label for="amount">
-                        Amount
-                    </label>
+            <div class="form-group">
 
-                    <div class="input-wrapper">
+                <label for="description">
+                    Expense Description
+                </label>
 
-                        <span class="input-icon">
-                            ₹
-                        </span>
+                <input
+                    type="text"
+                    id="description"
+                    name="description"
+                    placeholder="e.g. College canteen lunch"
+                    maxlength="200"
+                    required
+                >
 
-                        <input
-                            type="number"
-                            id="amount"
-                            name="amount"
-                            placeholder="0.00"
-                            min="0.01"
-                            step="0.01"
-                            required>
+                <small>
+                    Describe what you spent money on.
+                </small>
 
-                    </div>
+            </div>
 
-                    <small>
-                        Enter the amount in Indian Rupees.
-                    </small>
+
+            <!-- Amount -->
+
+            <div class="form-group">
+
+                <label for="amount">
+                    Amount (₹)
+                </label>
+
+                <div class="amount-input-wrapper">
+
+                    <span class="currency-symbol">₹</span>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        placeholder="0.00"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
 
                 </div>
 
+                <small>
+                    Enter the amount you spent.
+                </small>
 
-                <div class="form-group">
+            </div>
 
-                    <label for="date">
-                        Date
-                    </label>
 
-                    <div class="input-wrapper">
+            <!-- Date -->
 
-                        <span class="input-icon">
-                            📅
-                        </span>
+            <div class="form-group">
 
-                        <input
-                            type="date"
-                            id="date"
-                            name="date"
-                            required>
+                <label for="date">
+                    Date
+                </label>
 
-                    </div>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="{{ request.form.get('date', '') }}"
+                    required
+                >
 
-                    <small>
-                        Select when the expense occurred.
-                    </small>
+                <small>
+                    Select the date of your expense.
+                </small>
+
+            </div>
+
+
+            <!-- AI Category Info -->
+
+            <div class="ai-info-box">
+
+                <div class="ai-info-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <strong>
+                        AI-Powered Categorization
+                    </strong>
+
+                    <p>
+                        ExpenseWise will automatically predict
+                        the category of your expense using its
+                        smart classification model.
+                    </p>
 
                 </div>
 
+            </div>
 
-                <div class="ai-category-box">
 
-                    <div class="ai-category-icon">
-                        ✦
-                    </div>
+            <!-- Submit -->
 
-                    <div>
+            <div class="form-actions">
 
-                        <strong>
-                            AI-powered categorization
-                        </strong>
+                <a href="/" class="cancel-btn">
+                    Cancel
+                </a>
 
-                        <p>
-                            ExpenseWise automatically identifies
-                            the category from your description.
-                        </p>
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="submitExpenseBtn"
+                >
+                    <span>➕</span>
+                    Add Expense
+                </button>
 
-                    </div>
+            </div>
 
+        </form>
+
+    </div>
+
+
+    <!-- ================= QUICK TIPS ================= -->
+
+    <div class="tips-card">
+
+        <div class="tips-title">
+            💡 Quick Tips
+        </div>
+
+        <div class="tips-grid">
+
+            <div class="tip-item">
+
+                <span>📝</span>
+
+                <div>
+                    <strong>Be specific</strong>
+
+                    <p>
+                        Descriptions like "college lunch"
+                        help the AI classify expenses better.
+                    </p>
                 </div>
 
-
-                <div class="form-actions">
-
-                    <a href="/"
-                       class="cancel-button">
-
-                        Cancel
-
-                    </a>
+            </div>
 
 
-                    <button
-                        type="submit"
-                        class="submit-button">
+            <div class="tip-item">
 
-                        <span>
-                            Add Expense
-                        </span>
+                <span>💰</span>
 
-                        <span>
-                            →
-                        </span>
+                <div>
+                    <strong>Track everything</strong>
 
-                    </button>
-
+                    <p>
+                        Even small expenses can add up
+                        over the month.
+                    </p>
                 </div>
 
+            </div>
 
-            </form>
+
+            <div class="tip-item">
+
+                <span>📊</span>
+
+                <div>
+                    <strong>Check Analytics</strong>
+
+                    <p>
+                        Review your spending patterns
+                        regularly.
+                    </p>
+                </div>
+
+            </div>
 
         </div>
 
-
-        <!-- INFO -->
-
-        <aside class="expense-info-card">
-
-
-            <div class="info-icon">
-                💡
-            </div>
-
-
-            <span class="section-label">
-                SMART TRACKING
-            </span>
-
-
-            <h2>
-                Make every rupee count.
-            </h2>
-
-
-            <p>
-                Keep your expenses organized and get
-                a clearer picture of your spending habits.
-            </p>
-
-
-            <div class="info-divider">
-            </div>
-
-
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Automatic categorization
-                </span>
-
-            </div>
-
-
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Budget monitoring
-                </span>
-
-            </div>
-
-
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Spending analytics
-                </span>
-
-            </div>
-
-
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Local SQLite storage
-                </span>
-
-            </div>
-
-
-        </aside>
-
-
-    </section>
-
+    </div>
 
 </main>
 
 
-<!-- FOOTER -->
+<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
 
-    <div class="footer-brand">
+    <div class="footer-content">
 
-        <strong>
-            ExpenseWise
-        </strong>
+        <div>
+            <strong>ExpenseWise</strong>
 
-        <span>
-            Smart Student Expense Tracker
-        </span>
+            <p>
+                Smart Student Expense Tracker
+            </p>
+        </div>
+
+        <div>
+            <p>
+                Built with Flask, SQLite & AI
+            </p>
+        </div>
 
     </div>
-
-    <p>
-        Built with Python, Flask, SQLite & Machine Learning
-    </p>
-
-    <p class="copyright">
-        © 2026 ExpenseWise
-    </p>
 
 </footer>
 
 
+<!-- ================= JAVASCRIPT ================= -->
+
 <script>
 
-window.addEventListener("load", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-    const loader =
-        document.getElementById("page-loader");
+    /* Set today's date automatically */
+    const dateInput = document.getElementById("date");
 
-    setTimeout(function () {
+    if (dateInput && !dateInput.value) {
 
-        if (loader) {
-            loader.classList.add("loader-hidden");
-        }
+        const today = new Date();
 
-    }, 350);
+        const year = today.getFullYear();
+
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+
+        const day = String(today.getDate()).padStart(2, "0");
+
+        dateInput.value = `${year}-${month}-${day}`;
+
+    }
+
+
+    /* Form submit loading */
+
+    const form = document.getElementById("expenseForm");
+
+    const button = document.getElementById("submitExpenseBtn");
+
+    if (form && button) {
+
+        form.addEventListener("submit", function () {
+
+            button.disabled = true;
+
+            button.innerHTML = `
+                <span>⏳</span>
+                Adding Expense...
+            `;
+
+        });
+
+    }
+
+
+    /* Remove page loader */
+
+    const loader = document.getElementById("pageLoader");
+
+    if (loader) {
+
+        setTimeout(function () {
+
+            loader.classList.add("hidden");
+
+        }, 300);
+
+    }
 
 });
 
-
-const dateInput =
-    document.getElementById("date");
-
-
-if (dateInput && !dateInput.value) {
-
-    const today = new Date();
-
-    const year =
-        today.getFullYear();
-
-    const month =
-        String(today.getMonth() + 1)
-        .padStart(2, "0");
-
-    const day =
-        String(today.getDate())
-        .padStart(2, "0");
-
-    dateInput.value =
-        `${year}-${month}-${day}`;
-
-}
-
 </script>
 
-
 </body>
-
 </html>

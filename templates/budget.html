@@ -9,7 +9,7 @@
           content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-          content="Manage your monthly budget with ExpenseWise">
+          content="ExpenseWise - Manage your monthly spending budget">
 
     <meta name="theme-color"
           content="#172554">
@@ -19,6 +19,8 @@
     <link rel="icon"
           type="image/svg+xml"
           href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <!-- Google Font -->
 
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
@@ -31,6 +33,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
+    <!-- Main CSS -->
+
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
 
@@ -40,13 +44,17 @@
 <body>
 
 
-<!-- LOADING SCREEN -->
+<!-- =====================================================
+     LOADING SCREEN
+     ===================================================== -->
 
 <div id="page-loader">
 
     <div class="loader-content">
 
-        <div class="loader-logo">₹</div>
+        <div class="loader-logo">
+            ₹
+        </div>
 
         <div class="loader-title">
             ExpenseWise
@@ -57,9 +65,11 @@
         </div>
 
         <div class="loader-dots">
+
             <span></span>
             <span></span>
             <span></span>
+
         </div>
 
     </div>
@@ -67,11 +77,63 @@
 </div>
 
 
-<!-- NAVBAR -->
+<!-- =====================================================
+     TOAST NOTIFICATIONS
+     ===================================================== -->
+
+<div id="toast-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="toast toast-{{ category }}">
+
+                <div class="toast-icon">
+
+                    {% if category == "success" %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+
+                </div>
+
+                <div class="toast-message">
+
+                    {{ message }}
+
+                </div>
+
+                <button
+                    class="toast-close"
+                    onclick="this.parentElement.remove()"
+                    aria-label="Close notification">
+
+                    ×
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+</div>
+
+
+<!-- =====================================================
+     NAVIGATION BAR
+     ===================================================== -->
 
 <nav class="navbar">
 
-    <a href="/" class="brand">
+
+    <!-- BRAND -->
+
+    <a href="{{ url_for('home') }}"
+       class="brand">
 
         <div class="brand-icon">
             ₹
@@ -92,116 +154,148 @@
     </a>
 
 
+    <!-- NAVIGATION -->
+
     <div class="nav-links">
 
-        <a href="/">
+        <a href="{{ url_for('home') }}">
             Dashboard
         </a>
 
-        <a href="/add-expense">
+        <a href="{{ url_for('add_expense') }}">
             Expenses
         </a>
 
-        <a href="/analytics">
+        <a href="{{ url_for('analytics') }}">
             Analytics
         </a>
 
-        <a href="/budget" class="active">
+        <a href="{{ url_for('budget') }}"
+           class="active">
+
             Budget
+
         </a>
 
     </div>
 
+
+    <!-- USER -->
+
+    <div class="nav-user">
+
+        <span class="user-welcome">
+
+            👤 {{ current_user.name }}
+
+        </span>
+
+        <a href="{{ url_for('logout') }}"
+           class="logout-link">
+
+            Logout
+
+        </a>
+
+    </div>
+
+
 </nav>
 
 
-<!-- MAIN -->
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
 
-<main class="form-page">
+<main class="budget-container">
 
 
-    <section class="form-page-heading">
+    <!-- PAGE HEADER -->
+
+    <section class="budget-header">
 
         <div>
 
-            <span class="section-label">
-                FINANCIAL PLANNING
+            <span class="budget-badge">
+                💰 Financial Planning
             </span>
 
             <h1>
-                Manage your budget
+                Manage Your Budget
             </h1>
 
             <p>
-                Set a monthly spending limit and keep
-                your expenses under control.
+                Set your monthly spending limit and
+                stay in control of your finances.
             </p>
 
-        </div>
-
-
-        <div class="form-heading-icon">
-            ₹
         </div>
 
     </section>
 
 
-    <section class="expense-form-layout">
+    <!-- =================================================
+         BUDGET CONTENT
+         ================================================= -->
+
+    <section class="budget-grid">
 
 
-        <!-- BUDGET FORM -->
+        <!-- UPDATE BUDGET CARD -->
 
-        <div class="form-card">
+        <div class="budget-card">
+
+            <div class="budget-card-icon">
+                ₹
+            </div>
+
+            <h2>
+                Monthly Budget
+            </h2>
+
+            <p class="budget-description">
+
+                Set the maximum amount you plan to spend
+                during the month.
+
+            </p>
 
 
-            <div class="form-card-header">
+            <!-- CURRENT BUDGET -->
 
-                <div>
+            <div class="current-budget-box">
 
-                    <span class="section-label">
-                        MONTHLY BUDGET
-                    </span>
+                <span>
+                    Current Budget
+                </span>
 
-                    <h2>
-                        Budget settings
-                    </h2>
-
-                </div>
-
-
-                <div class="secure-badge">
-                    ✓ Saved locally
-                </div>
+                <strong>
+                    ₹{{ "%.2f"|format(current_budget) }}
+                </strong>
 
             </div>
 
 
-            {% if error %}
+            <!-- FORM -->
 
-            <div class="form-error">
-
-                <span>!</span>
-
-                {{ error }}
-
-            </div>
-
-            {% endif %}
-
-
-            <form method="POST">
+            <form
+                method="POST"
+                action="{{ url_for('budget') }}"
+                class="budget-form">
 
 
                 <div class="form-group">
 
                     <label for="budget">
-                        Monthly budget
+
+                        New Monthly Budget
+
                     </label>
 
-                    <div class="input-wrapper">
 
-                        <span class="input-icon">
+                    <div class="budget-input-wrapper">
+
+                        <span class="currency-symbol">
                             ₹
                         </span>
 
@@ -209,69 +303,24 @@
                             type="number"
                             id="budget"
                             name="budget"
-                            value="{{ current_budget }}"
+                            placeholder="Enter budget amount"
                             min="1"
                             step="0.01"
-                            placeholder="10000"
                             required>
 
                     </div>
 
-                    <small>
-                        Set the maximum amount you plan to
-                        spend each month.
-                    </small>
-
                 </div>
 
 
-                <div class="ai-category-box">
+                <button
+                    type="submit"
+                    class="primary-btn"
+                    id="budgetUpdateBtn">
 
-                    <div class="ai-category-icon">
-                        🎯
-                    </div>
+                    💾 Update Budget
 
-                    <div>
-
-                        <strong>
-                            Budget monitoring
-                        </strong>
-
-                        <p>
-                            ExpenseWise will calculate your
-                            budget utilization automatically.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-actions">
-
-                    <a href="/"
-                       class="cancel-button">
-
-                        Cancel
-
-                    </a>
-
-
-                    <button
-                        type="submit"
-                        class="submit-button">
-
-                        <span>
-                            Save Budget
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </div>
+                </button>
 
 
             </form>
@@ -279,83 +328,146 @@
         </div>
 
 
-        <!-- INFO -->
+        <!-- =================================================
+             INFORMATION CARD
+             ================================================= -->
 
-        <aside class="expense-info-card">
+        <div class="budget-info-card">
 
 
             <div class="info-icon">
-                🎯
+                📊
             </div>
 
 
-            <span class="section-label">
-                SMART BUDGETING
-            </span>
-
-
             <h2>
-                Plan today. Spend smarter.
+                Why Set a Budget?
             </h2>
 
 
             <p>
-                A clear spending limit helps you understand
-                your financial habits and avoid unnecessary
-                overspending.
+                A monthly budget helps you understand
+                your spending limits and avoid unnecessary
+                expenses.
             </p>
 
 
-            <div class="info-divider">
+            <div class="budget-tips">
+
+
+                <div class="budget-tip">
+
+                    <span class="tip-number">
+                        01
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Track Spending
+                        </strong>
+
+                        <p>
+                            Record every expense to understand
+                            where your money goes.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="budget-tip">
+
+                    <span class="tip-number">
+                        02
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Monitor Your Limit
+                        </strong>
+
+                        <p>
+                            Use the dashboard to monitor
+                            your budget utilization.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="budget-tip">
+
+                    <span class="tip-number">
+                        03
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Improve Your Habits
+                        </strong>
+
+                        <p>
+                            Analyze your spending patterns
+                            and make better financial decisions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
             </div>
 
-
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Monthly spending limit
-                </span>
-
-            </div>
+        </div>
 
 
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Automatic utilization tracking
-                </span>
-
-            </div>
+    </section>
 
 
-            <div class="info-feature">
+    <!-- =================================================
+         QUICK ACTIONS
+         ================================================= -->
 
-                <div>✓</div>
+    <section class="budget-actions">
 
-                <span>
-                    Budget status indicators
-                </span>
+        <div>
 
-            </div>
+            <h2>
+                Continue Managing Your Finances
+            </h2>
 
+            <p>
+                Add expenses or view detailed spending analytics.
+            </p>
 
-            <div class="info-feature">
-
-                <div>✓</div>
-
-                <span>
-                    Analytics integration
-                </span>
-
-            </div>
+        </div>
 
 
-        </aside>
+        <div class="budget-action-buttons">
 
+            <a
+                href="{{ url_for('add_expense') }}"
+                class="secondary-btn">
+
+                + Add Expense
+
+            </a>
+
+
+            <a
+                href="{{ url_for('analytics') }}"
+                class="primary-btn">
+
+                View Analytics →
+
+            </a>
+
+        </div>
 
     </section>
 
@@ -363,7 +475,9 @@
 </main>
 
 
-<!-- FOOTER -->
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
 
 <footer class="footer">
 
@@ -390,22 +504,107 @@
 </footer>
 
 
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
 <script>
 
-window.addEventListener("load", function () {
 
-    const loader =
-        document.getElementById("page-loader");
+/* -----------------------------------------------------
+   LOADING SCREEN
+   ----------------------------------------------------- */
 
-    setTimeout(function () {
+window.addEventListener(
+    "load",
+    function () {
 
-        if (loader) {
-            loader.classList.add("loader-hidden");
+        const loader =
+            document.getElementById("page-loader");
+
+        setTimeout(
+            function () {
+
+                if (loader) {
+
+                    loader.classList.add(
+                        "loader-hidden"
+                    );
+
+                }
+
+            },
+            350
+        );
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   TOAST AUTO DISMISS
+   ----------------------------------------------------- */
+
+setTimeout(
+    function () {
+
+        const toasts =
+            document.querySelectorAll(".toast");
+
+        toasts.forEach(
+            function (toast) {
+
+                toast.style.animation =
+                    "toastOut 0.35s ease forwards";
+
+                setTimeout(
+                    function () {
+
+                        toast.remove();
+
+                    },
+                    350
+                );
+
+            }
+        );
+
+    },
+    3500
+);
+
+
+/* -----------------------------------------------------
+   BUDGET BUTTON LOADING
+   ----------------------------------------------------- */
+
+const budgetForm =
+    document.querySelector(".budget-form");
+
+const budgetButton =
+    document.getElementById("budgetUpdateBtn");
+
+
+if (budgetForm) {
+
+    budgetForm.addEventListener(
+        "submit",
+        function () {
+
+            if (budgetButton) {
+
+                budgetButton.innerHTML =
+                    "⏳ Updating...";
+
+                budgetButton.disabled = true;
+
+            }
+
         }
+    );
 
-    }, 350);
+}
 
-});
 
 </script>
 
