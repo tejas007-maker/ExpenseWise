@@ -577,6 +577,23 @@ def register():
         db.session.commit()
 
 
+        # -------------------------------------------------
+        # WELCOME EMAIL
+        # -------------------------------------------------
+
+        try:
+
+            from notify_budget import send_welcome_email
+
+            send_welcome_email(new_user)
+
+        except Exception as error:
+
+            print(
+                f"Welcome email failed: {error}"
+            )
+
+
         flash(
             "Account created successfully! Please login.",
             "success"

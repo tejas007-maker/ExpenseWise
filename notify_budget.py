@@ -19,6 +19,63 @@ if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
 
+def send_welcome_email(user):
+    """Send a welcome email after a new ExpenseWise account is created."""
+
+    if not RESEND_API_KEY:
+        print("RESEND_API_KEY is not configured.")
+        return False
+
+    try:
+        resend.Emails.send(
+            {
+                "from": "ExpenseWise <onboarding@resend.dev>",
+                "to": [user.email],
+                "subject": "Welcome to ExpenseWise! 🎉",
+                "html": f"""
+                <html>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2>Welcome to ExpenseWise, {user.name}! 🎉</h2>
+
+                    <p>
+                        Your ExpenseWise account has been created successfully.
+                    </p>
+
+                    <p>With ExpenseWise, you can:</p>
+
+                    <ul>
+                        <li>Track your daily expenses</li>
+                        <li>Get AI-based expense categories</li>
+                        <li>Set and manage your monthly budget</li>
+                        <li>Analyze your spending patterns</li>
+                        <li>Receive budget threshold alerts</li>
+                    </ul>
+
+                    <p>
+                        Start tracking your expenses and manage your money smarter!
+                    </p>
+
+                    <p>
+                        Regards,<br>
+                        <strong>ExpenseWise Team</strong>
+                    </p>
+                </body>
+                </html>
+                """
+            }
+        )
+
+        print(
+            f"Welcome email sent to {user.email}."
+        )
+
+        return True
+
+    except Exception as error:
+        print(f"Welcome email sending failed: {error}")
+        return False
+
+
 def already_sent(user_id, month, notification_type):
     result = db.session.execute(
         db.select(budget_notification).where(
