@@ -52,3 +52,37 @@ Example:
 AI Category Prediction
         ↓
 Food
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Landing Page
+
+![ExpenseWise Landing Page](screenshots/landing.png)
+
+### 📊 Dashboard
+
+![ExpenseWise Dashboard](screenshots/dashboard.png)
+
+### ➕ Add Expense
+
+![Add Expense](screenshots/add-expense.png)
+
+### 📈 Analytics
+
+![Expense Analytics](screenshots/analytics.png)
+
+### 💰 Budget Management
+
+![Budget Management](screenshots/budget.png)
+
+---
+
+## 🔗 Links
+
+**Live Application:**  
+https://expensewise-aehc.onrender.com/
+
+**GitHub Repository:**  
+https://github.com/tejas007-maker/ExpenseWise
