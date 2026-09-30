@@ -8,16 +8,47 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
+    <!-- SEO -->
     <meta name="description"
-          content="ExpenseWise - Smart student expense tracking, budgeting and spending analytics">
+          content="ExpenseWise is a smart student expense tracker for managing daily expenses, monthly budgets, spending analytics and budget alerts.">
+
+    <meta name="keywords"
+          content="ExpenseWise, student expense tracker, expense tracker, budget tracker, student budgeting, spending analytics, expense management">
+
+    <meta name="author"
+          content="ExpenseWise">
+
+    <meta name="robots"
+          content="index, follow">
 
     <meta name="theme-color"
           content="#172554">
 
+    <!-- Open Graph -->
+    <meta property="og:title"
+          content="ExpenseWise – Smart Student Expense Tracker">
+
+    <meta property="og:description"
+          content="Track expenses, manage monthly budgets, analyze spending and stay within your budget with ExpenseWise.">
+
+    <meta property="og:type"
+          content="website">
+
+    <meta property="og:url"
+          content="https://expensewise-aehc.onrender.com/">
+
+    <meta property="og:site_name"
+          content="ExpenseWise">
+
+    <!-- Canonical URL -->
+    <link rel="canonical"
+          href="https://expensewise-aehc.onrender.com/">
+
     <title>
-        ExpenseWise | Dashboard
+        ExpenseWise – Smart Student Expense Tracker
     </title>
 
+    <!-- Favicon -->
     <link rel="icon"
           type="image/svg+xml"
           href="{{ url_for('static', filename='favicon.svg') }}">
@@ -206,7 +237,6 @@
         </a>
 
     </div>
-
 
 </nav>
 
@@ -820,6 +850,7 @@
    LOADING SCREEN
    ----------------------------------------------------- */
 
+
 window.addEventListener(
     "load",
     function () {
@@ -843,6 +874,7 @@ window.addEventListener(
             350
         );
 
+
     }
 );
 
@@ -850,6 +882,7 @@ window.addEventListener(
 /* -----------------------------------------------------
    TOAST AUTO DISMISS
    ----------------------------------------------------- */
+
 
 setTimeout(
     function () {
@@ -876,6 +909,7 @@ setTimeout(
 
             }
         );
+
 
     },
     3500
