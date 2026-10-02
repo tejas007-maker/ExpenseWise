@@ -2,14 +2,17 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-          content="Login to ExpenseWise - Smart Student Expense Tracker">
+          content="Login to your ExpenseWise smart expense tracker account">
 
-    <meta name="theme-color" content="#172554">
+    <meta name="theme-color"
+          content="#172554">
 
     <title>Login | ExpenseWise</title>
 
@@ -24,87 +27,173 @@
           href="https://fonts.gstatic.com"
           crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
+
 
 <body>
 
-<div class="auth-page">
 
-    <div class="auth-card">
+<!-- =====================================================
+     LOADING SCREEN
+     ===================================================== -->
 
-        <a href="/" class="auth-brand">
+<div id="page-loader">
 
-            <div class="auth-logo">
+    <div class="loader-content">
+
+        <div class="loader-logo">
+            ₹
+        </div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST / FLASH MESSAGES
+     ===================================================== -->
+
+<div id="toast-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="toast toast-{{ category }}">
+
+                <div class="toast-icon">
+
+                    {% if category == "success" %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+
+                </div>
+
+                <div class="toast-message">
+                    {{ message }}
+                </div>
+
+                <button
+                    class="toast-close"
+                    onclick="this.parentElement.remove()"
+                    aria-label="Close notification">
+
+                    ×
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+</div>
+
+
+<!-- =====================================================
+     LOGIN PAGE
+     ===================================================== -->
+
+<main class="auth-container">
+
+
+    <!-- =================================================
+         AUTH CARD
+         ================================================= -->
+
+    <section class="auth-card">
+
+
+        <!-- BRAND -->
+
+        <a
+            href="{{ url_for('landing') }}"
+            class="auth-brand">
+
+            <div class="brand-icon">
                 ₹
             </div>
 
             <div>
-                <div class="auth-brand-name">
+
+                <div class="brand-name">
                     ExpenseWise
                 </div>
 
-                <div class="auth-brand-subtitle">
-                    Smart Student Expense Tracker
+                <div class="brand-subtitle">
+                    Smart Expense Tracker
                 </div>
+
             </div>
 
         </a>
 
 
-        <div class="auth-heading">
+        <!-- HEADER -->
 
-            <h1>Welcome Back</h1>
+        <div class="auth-header">
+
+            <span class="hero-badge">
+                ✦ Welcome Back
+            </span>
+
+            <h1>
+                Login to
+                <span>ExpenseWise</span>
+            </h1>
 
             <p>
-                Login to manage your expenses and budget.
+                Access your expenses, budget and spending analytics.
             </p>
 
         </div>
 
 
-        <!-- Flash Messages -->
+        <!-- =================================================
+             LOGIN FORM
+             ================================================= -->
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-
-            {% if messages %}
-
-                <div class="auth-messages">
-
-                    {% for category, message in messages %}
-
-                        <div class="auth-message auth-message-{{ category }}">
-
-                            <span>
-                                {% if category == "success" %}
-                                    ✓
-                                {% else %}
-                                    !
-                                {% endif %}
-                            </span>
-
-                            {{ message }}
-
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            {% endif %}
-
-        {% endwith %}
+        <form
+            method="POST"
+            action="{{ url_for('login') }}"
+            class="auth-form">
 
 
-        <!-- Login Form -->
+            <!-- CSRF PROTECTION -->
 
-        <form method="POST"
-              action="{{ url_for('login') }}"
-              class="auth-form">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}">
+
+
+            <!-- EMAIL -->
 
             <div class="form-group">
 
@@ -118,11 +207,13 @@
                     name="email"
                     placeholder="Enter your email"
                     autocomplete="email"
-                    required
-                >
+                    maxlength="254"
+                    required>
 
             </div>
 
+
+            <!-- PASSWORD -->
 
             <div class="form-group">
 
@@ -136,55 +227,210 @@
                     name="password"
                     placeholder="Enter your password"
                     autocomplete="current-password"
-                    required
-                >
+                    required>
 
             </div>
 
 
-            <label class="remember-option">
+            <!-- REMEMBER ME -->
+
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 20px;
+                ">
 
                 <input
                     type="checkbox"
+                    id="remember"
                     name="remember"
-                >
+                    value="1">
 
-                <span>
+                <label
+                    for="remember"
+                    style="margin: 0; cursor: pointer;">
+
                     Remember me
-                </span>
 
-            </label>
+                </label>
 
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
 
             <button
                 type="submit"
-                class="auth-submit">
+                class="btn btn-primary"
+                style="width: 100%;">
+
                 Login
+
             </button>
+
 
         </form>
 
 
-        <div class="auth-divider">
-            <span>OR</span>
-        </div>
+        <!-- =================================================
+             REGISTER LINK
+             ================================================= -->
 
-
-        <div class="auth-footer">
+        <div
+            style="
+                text-align: center;
+                margin-top: 24px;
+            ">
 
             <p>
+
                 Don't have an account?
-                <a href="{{ url_for('register') }}">
+
+                <a
+                    href="{{ url_for('register') }}"
+                    style="font-weight: 700;">
+
                     Create Account
+
                 </a>
+
             </p>
 
         </div>
 
 
+        <!-- =================================================
+             BACK TO HOME
+             ================================================= -->
+
+        <div
+            style="
+                text-align: center;
+                margin-top: 14px;
+            ">
+
+            <a
+                href="{{ url_for('landing') }}"
+                class="secondary-btn">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
     </div>
 
-</div>
+
+    <p>
+        Secure expense tracking for smarter financial decisions.
+    </p>
+
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* -----------------------------------------------------
+   LOADING SCREEN
+   ----------------------------------------------------- */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        const loader =
+            document.getElementById("page-loader");
+
+        setTimeout(
+            function () {
+
+                if (loader) {
+
+                    loader.classList.add(
+                        "loader-hidden"
+                    );
+
+                }
+
+            },
+            350
+        );
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   TOAST AUTO DISMISS
+   ----------------------------------------------------- */
+
+setTimeout(
+    function () {
+
+        const toasts =
+            document.querySelectorAll(".toast");
+
+        toasts.forEach(
+            function (toast) {
+
+                toast.style.animation =
+                    "toastOut 0.35s ease forwards";
+
+                setTimeout(
+                    function () {
+
+                        toast.remove();
+
+                    },
+                    350
+                );
+
+            }
+        );
+
+    },
+    3500
+);
+
+
+</script>
+
 
 </body>
 

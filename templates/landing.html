@@ -1,772 +1,851 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-          content="ExpenseWise is a smart student expense tracker for managing daily expenses, monthly budgets, spending analytics and budget alerts.">
+          content="ExpenseWise is a smart student expense tracker with AI-powered expense categorization, monthly budgets, analytics and spending insights.">
 
     <meta name="keywords"
-          content="ExpenseWise, student expense tracker, expense tracker, budget tracker, student budgeting, spending analytics">
+          content="expense tracker, student expense tracker, budget tracker, expense manager, spending analyzer, ExpenseWise">
 
-    <meta name="author" content="ExpenseWise">
-    <meta name="robots" content="index, follow">
+    <meta name="author"
+          content="ExpenseWise">
 
-    <meta name="theme-color" content="#172554">
+    <meta name="theme-color"
+          content="#172554">
 
-    <meta property="og:title"
-          content="ExpenseWise – Smart Student Expense Tracker">
-
-    <meta property="og:description"
-          content="Track expenses, manage budgets, analyze spending and stay within your budget with ExpenseWise.">
-
-    <meta property="og:type" content="website">
-
-    <meta property="og:url"
-          content="https://expensewise-aehc.onrender.com/">
-
-    <meta property="og:site_name" content="ExpenseWise">
+    <meta name="robots"
+          content="index, follow">
 
     <link rel="canonical"
           href="https://expensewise-aehc.onrender.com/">
 
-    <title>ExpenseWise – Smart Student Expense Tracker</title>
+    <title>
+        ExpenseWise | Smart Student Expense Tracker
+    </title>
 
-    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- =================================================
+         FAVICON
+         ================================================= -->
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link
+        rel="icon"
+        type="image/svg+xml"
+        href="{{ url_for('static', filename='favicon.svg') }}">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        html {
-            scroll-behavior: smooth;
-        }
+    <!-- =================================================
+         GOOGLE FONTS
+         ================================================= -->
 
-        body {
-            font-family: "Inter", sans-serif;
-            color: #172033;
-            background: #f8fafc;
-            line-height: 1.6;
-        }
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
 
-        a {
-            text-decoration: none;
-        }
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
 
-        .container {
-            width: min(1120px, 92%);
-            margin: auto;
-        }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
-        /* NAVBAR */
 
-        nav {
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    <!-- =================================================
+         MAIN CSS
+         ================================================= -->
 
-        .nav-container {
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: #172554;
-        }
 
-        .logo span {
-            color: #2563eb;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 11px 20px;
-            border-radius: 9px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: 0.2s;
-            display: inline-block;
-        }
-
-        .btn-login {
-            color: #172554;
-            border: 1px solid #dbe2ea;
-            background: white;
-        }
-
-        .btn-login:hover {
-            background: #f1f5f9;
-        }
-
-        .btn-primary {
-            color: white;
-            background: #2563eb;
-            border: 1px solid #2563eb;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        /* HERO */
-
-        .hero {
-            padding: 90px 0 80px;
-            background:
-                radial-gradient(circle at top right, #dbeafe 0, transparent 35%),
-                linear-gradient(180deg, #ffffff, #f8fafc);
-        }
-
-        .hero-content {
-            max-width: 850px;
-            margin: auto;
-            text-align: center;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 7px 14px;
-            border-radius: 999px;
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 22px;
-        }
-
-        .hero h1 {
-            font-size: clamp(40px, 7vw, 68px);
-            line-height: 1.05;
-            letter-spacing: -2px;
-            color: #172554;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 span {
-            color: #2563eb;
-        }
-
-        .hero p {
-            max-width: 700px;
-            margin: auto;
-            font-size: 18px;
-            color: #64748b;
-        }
-
-        .hero-buttons {
-            margin-top: 32px;
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .hero-btn {
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .hero-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .hero-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .hero-secondary {
-            background: white;
-            color: #172554;
-            border: 1px solid #dbe2ea;
-        }
-
-        .hero-secondary:hover {
-            background: #f1f5f9;
-        }
-
-        /* FEATURES */
-
-        .features {
-            padding: 85px 0;
-            background: white;
-        }
-
-        .section-heading {
-            text-align: center;
-            max-width: 700px;
-            margin: auto;
-        }
-
-        .section-heading h2 {
-            font-size: 36px;
-            color: #172554;
-            margin-bottom: 12px;
-        }
-
-        .section-heading p {
-            color: #64748b;
-        }
-
-        .feature-grid {
-            margin-top: 45px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .feature-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 28px;
-            transition: 0.25s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: #bfdbfe;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-size: 23px;
-            margin-bottom: 18px;
-        }
-
-        .feature-card h3 {
-            color: #172554;
-            margin-bottom: 8px;
-            font-size: 18px;
-        }
-
-        .feature-card p {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* HOW IT WORKS */
-
-        .how {
-            padding: 85px 0;
-            background: #f8fafc;
-        }
-
-        .steps {
-            margin-top: 45px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .step {
-            text-align: center;
-            padding: 25px;
-        }
-
-        .step-number {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            margin: 0 auto 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #172554;
-            color: white;
-            font-weight: 800;
-            font-size: 18px;
-        }
-
-        .step h3 {
-            color: #172554;
-            margin-bottom: 8px;
-        }
-
-        .step p {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* CTA */
-
-        .cta {
-            padding: 80px 0;
-            background: #172554;
-            color: white;
-            text-align: center;
-        }
-
-        .cta h2 {
-            font-size: 38px;
-            margin-bottom: 15px;
-        }
-
-        .cta p {
-            color: #cbd5e1;
-            max-width: 650px;
-            margin: auto;
-        }
-
-        .cta .btn {
-            margin-top: 28px;
-            background: white;
-            color: #172554;
-        }
-
-        .cta .btn:hover {
-            background: #e2e8f0;
-        }
-
-        /* FOOTER */
-
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 28px 0;
-        }
-
-        .footer-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .footer-logo {
-            color: white;
-            font-weight: 800;
-        }
-
-        .footer-text {
-            font-size: 13px;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 800px) {
-
-            .feature-grid,
-            .steps {
-                grid-template-columns: 1fr;
-            }
-
-            .hero {
-                padding: 65px 0;
-            }
-
-            .hero h1 {
-                letter-spacing: -1px;
-            }
-
-            .section-heading h2,
-            .cta h2 {
-                font-size: 30px;
-            }
-
-            .nav-container {
-                height: 65px;
-            }
-
-            .logo {
-                font-size: 21px;
-            }
-
-            .btn {
-                padding: 9px 13px;
-            }
-
-            .footer-container {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            .nav-buttons {
-                gap: 6px;
-            }
-
-            .btn-login {
-                display: none;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-            }
-
-            .hero-btn {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
+
 
 <body>
 
-    <!-- NAVBAR -->
 
-    <nav>
-        <div class="container nav-container">
+<!-- =====================================================
+     LOADING SCREEN
+     ===================================================== -->
 
-            <a href="/" class="logo">
-                Expense<span>Wise</span>
-            </a>
+<div id="page-loader">
 
-            <div class="nav-buttons">
-                <a href="/login" class="btn btn-login">
-                    Login
-                </a>
+    <div class="loader-content">
 
-                <a href="/register" class="btn btn-primary">
-                    Create Account
-                </a>
-            </div>
-
-        </div>
-    </nav>
-
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <div class="container hero-content">
-
-            <div class="badge">
-                Smart Student Expense Management
-            </div>
-
-            <h1>
-                Take Control of Your
-                <span>Money.</span>
-            </h1>
-
-            <p>
-                ExpenseWise helps students track daily expenses,
-                manage monthly budgets, understand spending habits
-                and make smarter financial decisions.
-            </p>
-
-            <div class="hero-buttons">
-
-                <a href="/register"
-                   class="hero-btn hero-primary">
-                    Get Started Free
-                </a>
-
-                <a href="#features"
-                   class="hero-btn hero-secondary">
-                    Explore Features
-                </a>
-
-            </div>
-
+        <div class="loader-logo">
+            ₹
         </div>
 
-    </section>
-
-
-    <!-- FEATURES -->
-
-    <section class="features" id="features">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <h2>
-                    Everything You Need to Track Your Spending
-                </h2>
-
-                <p>
-                    Simple tools designed to help students understand
-                    where their money goes.
-                </p>
-
-            </div>
-
-
-            <div class="feature-grid">
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        ₹
-                    </div>
-
-                    <h3>
-                        Track Expenses
-                    </h3>
-
-                    <p>
-                        Record your daily expenses and keep your
-                        financial activity organized in one place.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        AI
-                    </div>
-
-                    <h3>
-                        AI Category Prediction
-                    </h3>
-
-                    <p>
-                        ExpenseWise can automatically suggest a
-                        suitable category based on your expense
-                        description.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        %
-                    </div>
-
-                    <h3>
-                        Monthly Budget
-                    </h3>
-
-                    <p>
-                        Set a monthly spending budget and monitor
-                        how much of it you have used.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        📊
-                    </div>
-
-                    <h3>
-                        Spending Analytics
-                    </h3>
-
-                    <p>
-                        Understand your spending patterns with
-                        category-wise analytics and visual charts.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        🔔
-                    </div>
-
-                    <h3>
-                        Budget Alerts
-                    </h3>
-
-                    <p>
-                        Receive notifications when your spending
-                        approaches important budget thresholds.
-                    </p>
-
-                </div>
-
-
-                <div class="feature-card">
-
-                    <div class="feature-icon">
-                        🔐
-                    </div>
-
-                    <h3>
-                        Secure Accounts
-                    </h3>
-
-                    <p>
-                        Your expenses and budget information are
-                        associated with your own account.
-                    </p>
-
-                </div>
-
-            </div>
-
+        <div class="loader-title">
+            ExpenseWise
         </div>
 
-    </section>
-
-
-    <!-- HOW IT WORKS -->
-
-    <section class="how">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <h2>
-                    How ExpenseWise Works
-                </h2>
-
-                <p>
-                    Start managing your expenses in just a few simple steps.
-                </p>
-
-            </div>
-
-
-            <div class="steps">
-
-                <div class="step">
-
-                    <div class="step-number">
-                        1
-                    </div>
-
-                    <h3>
-                        Create Your Account
-                    </h3>
-
-                    <p>
-                        Register with your name, email and password.
-                    </p>
-
-                </div>
-
-
-                <div class="step">
-
-                    <div class="step-number">
-                        2
-                    </div>
-
-                    <h3>
-                        Add Your Expenses
-                    </h3>
-
-                    <p>
-                        Enter your expenses and let ExpenseWise
-                        organize them.
-                    </p>
-
-                </div>
-
-
-                <div class="step">
-
-                    <div class="step-number">
-                        3
-                    </div>
-
-                    <h3>
-                        Understand Your Spending
-                    </h3>
-
-                    <p>
-                        Use your dashboard and analytics to monitor
-                        your financial habits.
-                    </p>
-
-                </div>
-
-            </div>
-
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
         </div>
 
-    </section>
-
-
-    <!-- CTA -->
-
-    <section class="cta">
-
-        <div class="container">
-
-            <h2>
-                Start Tracking Smarter Today
-            </h2>
-
-            <p>
-                Create your free ExpenseWise account and take
-                control of your everyday spending.
-            </p>
-
-            <a href="/register" class="btn">
-                Create Your Account
-            </a>
-
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
-    </section>
+    </div>
+
+</div>
 
 
-    <!-- FOOTER -->
+<!-- =====================================================
+     NAVIGATION
+     ===================================================== -->
 
-    <footer>
+<nav class="navbar">
 
-        <div class="container footer-container">
+    <!-- BRAND -->
 
-            <div class="footer-logo">
+    <a
+        href="{{ url_for('landing') }}"
+        class="brand">
+
+        <div class="brand-icon">
+            ₹
+        </div>
+
+        <div>
+
+            <div class="brand-name">
                 ExpenseWise
             </div>
 
-            <div class="footer-text">
-                Smart Student Expense Tracker
-            </div>
-
-            <div class="footer-text">
-                © 2026 ExpenseWise
+            <div class="brand-subtitle">
+                Smart Expense Tracker
             </div>
 
         </div>
 
-    </footer>
+    </a>
+
+
+    <!-- NAV LINKS -->
+
+    <div class="nav-links">
+
+        <a href="#features">
+            Features
+        </a>
+
+        <a href="#how-it-works">
+            How It Works
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+    </div>
+
+
+    <!-- AUTH BUTTONS -->
+
+    <div class="nav-user">
+
+        <a
+            href="{{ url_for('login') }}"
+            class="secondary-btn">
+
+            Login
+
+        </a>
+
+        <a
+            href="{{ url_for('register') }}"
+            class="primary-btn">
+
+            Get Started
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<main>
+
+
+<section class="dashboard-container">
+
+
+    <div
+        class="dashboard-hero"
+        style="margin-top: 35px;">
+
+
+        <div class="hero-content">
+
+
+            <span class="hero-badge">
+                ✦ Smart Personal Finance
+            </span>
+
+
+            <h1>
+
+                Take Control of
+                <span>Your Expenses</span>
+
+            </h1>
+
+
+            <p>
+
+                ExpenseWise helps students track spending,
+                manage monthly budgets and understand their
+                financial habits with smart analytics and
+                AI-powered expense categorization.
+
+            </p>
+
+
+            <!-- HERO BUTTONS -->
+
+            <div
+                class="dashboard-action-buttons"
+                style="margin-top: 28px;">
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="primary-btn">
+
+                    Start Tracking Free →
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="secondary-btn">
+
+                    Login to ExpenseWise
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- HERO STAT -->
+
+        <div class="hero-stat-card">
+
+            <div class="hero-stat-label">
+                SMART EXPENSE MANAGEMENT
+            </div>
+
+            <div class="hero-stat-value">
+                ₹
+            </div>
+
+            <div class="hero-stat-small">
+                Track • Analyze • Save
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     FEATURES
+     ===================================================== -->
+
+<section
+    id="features"
+    class="dashboard-container">
+
+
+    <div
+        class="progress-header"
+        style="text-align: center;">
+
+        <div style="width: 100%;">
+
+            <span class="section-label">
+                FEATURES
+            </span>
+
+            <h2>
+                Everything You Need to Manage Your Money
+            </h2>
+
+            <p>
+                Simple tools designed to make expense tracking
+                easier and more useful.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-grid">
+
+
+        <!-- FEATURE 1 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🤖
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    AI Categorization
+                </span>
+
+                <strong>
+                    Smart
+                </strong>
+
+                <small>
+                    Automatically predicts expense categories
+                    from your description.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE 2 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                💰
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    Monthly Budget
+                </span>
+
+                <strong>
+                    Control
+                </strong>
+
+                <small>
+                    Set a monthly spending limit and monitor
+                    your budget utilization.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE 3 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                📊
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    Spending Analytics
+                </span>
+
+                <strong>
+                    Insights
+                </strong>
+
+                <small>
+                    Visualize spending categories and understand
+                    where your money goes.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE 4 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🔔
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    Budget Alerts
+                </span>
+
+                <strong>
+                    Stay Updated
+                </strong>
+
+                <small>
+                    Receive notifications as your spending
+                    reaches important budget thresholds.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE 5 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🔐
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    Secure Accounts
+                </span>
+
+                <strong>
+                    Protected
+                </strong>
+
+                <small>
+                    Personal accounts and expenses are separated
+                    securely between users.
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- FEATURE 6 -->
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                📱
+            </div>
+
+            <div class="summary-content">
+
+                <span>
+                    Responsive Design
+                </span>
+
+                <strong>
+                    Anywhere
+                </strong>
+
+                <small>
+                    Access your expense tracker from desktop,
+                    tablet or mobile devices.
+                </small>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
+
+<section
+    id="how-it-works"
+    class="dashboard-container">
+
+
+    <section class="budget-progress-card">
+
+
+        <div class="progress-header">
+
+            <div>
+
+                <span class="section-label">
+                    HOW IT WORKS
+                </span>
+
+                <h2>
+                    Manage Your Expenses in 3 Steps
+                </h2>
+
+                <p>
+                    ExpenseWise keeps the process simple.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-grid">
+
+
+            <!-- STEP 1 -->
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    1️⃣
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Create Account
+                    </span>
+
+                    <strong>
+                        Sign Up
+                    </strong>
+
+                    <small>
+                        Create your personal ExpenseWise account
+                        in a few seconds.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    2️⃣
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Record Spending
+                    </span>
+
+                    <strong>
+                        Add Expenses
+                    </strong>
+
+                    <small>
+                        Enter your expenses and let ExpenseWise
+                        categorize them automatically.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 3 -->
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    3️⃣
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Understand Spending
+                    </span>
+
+                    <strong>
+                        Analyze
+                    </strong>
+
+                    <small>
+                        Use analytics and budget tracking to
+                        understand your spending habits.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT
+     ===================================================== -->
+
+<section
+    id="about"
+    class="dashboard-container">
+
+
+    <section class="dashboard-actions">
+
+
+        <div>
+
+            <span class="section-label">
+                ABOUT EXPENSEWISE
+            </span>
+
+            <h2>
+                Built for Smarter Student Spending
+            </h2>
+
+            <p>
+                ExpenseWise is a student-focused expense tracking
+                application designed to make personal finance
+                management simple, visual and actionable.
+            </p>
+
+        </div>
+
+
+        <div
+            class="dashboard-action-buttons">
+
+            <a
+                href="{{ url_for('register') }}"
+                class="primary-btn">
+
+                Create Free Account →
+
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+</section>
+
+
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
+
+<section
+    class="dashboard-container">
+
+
+    <section
+        class="budget-progress-card"
+        style="text-align: center;">
+
+
+        <div class="progress-header">
+
+            <div style="width: 100%;">
+
+                <span class="section-label">
+                    START TODAY
+                </span>
+
+                <h2>
+                    Know Where Your Money Goes
+                </h2>
+
+                <p>
+                    Start tracking your expenses and build
+                    better financial habits with ExpenseWise.
+                </p>
+
+
+                <div
+                    class="dashboard-action-buttons"
+                    style="
+                        justify-content: center;
+                        margin-top: 24px;
+                    ">
+
+                    <a
+                        href="{{ url_for('register') }}"
+                        class="primary-btn">
+
+                        Get Started Free →
+
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('login') }}"
+                        class="secondary-btn">
+
+                        Login
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer">
+
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
+    </div>
+
+
+    <p>
+        Smart expense tracking, budgeting and analytics.
+    </p>
+
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* -----------------------------------------------------
+   SMOOTH SCROLL
+   ----------------------------------------------------- */
+
+document.querySelectorAll(
+    'a[href^="#"]'
+).forEach(
+    function (link) {
+
+        link.addEventListener(
+            "click",
+            function (event) {
+
+                const targetId =
+                    this.getAttribute("href");
+
+                const target =
+                    document.querySelector(targetId);
+
+                if (target) {
+
+                    event.preventDefault();
+
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   LOADING SCREEN
+   ----------------------------------------------------- */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        const loader =
+            document.getElementById("page-loader");
+
+        setTimeout(
+            function () {
+
+                if (loader) {
+
+                    loader.classList.add(
+                        "loader-hidden"
+                    );
+
+                }
+
+            },
+            350
+        );
+
+    }
+);
+
+
+</script>
+
 
 </body>
+
 </html>

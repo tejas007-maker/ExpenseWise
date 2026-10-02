@@ -9,7 +9,7 @@
           content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-          content="Create an ExpenseWise account">
+          content="Create your ExpenseWise smart expense tracker account">
 
     <meta name="theme-color"
           content="#172554">
@@ -27,35 +27,127 @@
           href="https://fonts.gstatic.com"
           crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 
 <body>
 
-<div class="auth-page">
 
-    <div class="auth-card">
+<!-- =====================================================
+     LOADING SCREEN
+     ===================================================== -->
 
-        <a href="/" class="auth-brand">
+<div id="page-loader">
 
-            <div class="auth-logo">
+    <div class="loader-content">
+
+        <div class="loader-logo">
+            ₹
+        </div>
+
+        <div class="loader-title">
+            ExpenseWise
+        </div>
+
+        <div class="loader-subtitle">
+            Smart Student Expense Tracker
+        </div>
+
+        <div class="loader-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST / FLASH MESSAGES
+     ===================================================== -->
+
+<div id="toast-container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="toast toast-{{ category }}">
+
+                <div class="toast-icon">
+
+                    {% if category == "success" %}
+                        ✓
+                    {% else %}
+                        !
+                    {% endif %}
+
+                </div>
+
+                <div class="toast-message">
+                    {{ message }}
+                </div>
+
+                <button
+                    class="toast-close"
+                    onclick="this.parentElement.remove()"
+                    aria-label="Close notification">
+
+                    ×
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+</div>
+
+
+<!-- =====================================================
+     REGISTER PAGE
+     ===================================================== -->
+
+<main class="auth-container">
+
+
+    <!-- =================================================
+         AUTH CARD
+         ================================================= -->
+
+    <section class="auth-card">
+
+
+        <!-- BRAND -->
+
+        <a
+            href="{{ url_for('landing') }}"
+            class="auth-brand">
+
+            <div class="brand-icon">
                 ₹
             </div>
 
             <div>
 
-                <div class="auth-brand-name">
+                <div class="brand-name">
                     ExpenseWise
                 </div>
 
-                <div class="auth-brand-subtitle">
-                    Smart Student Expense Tracker
+                <div class="brand-subtitle">
+                    Smart Expense Tracker
                 </div>
 
             </div>
@@ -63,58 +155,46 @@
         </a>
 
 
-        <div class="auth-heading">
+        <!-- HEADER -->
 
-            <h1>Create Account</h1>
+        <div class="auth-header">
+
+            <span class="hero-badge">
+                ✦ Get Started
+            </span>
+
+            <h1>
+                Create Your
+                <span>Account</span>
+            </h1>
 
             <p>
-                Start tracking your expenses smarter.
+                Start tracking your expenses and manage your
+                monthly budget smarter.
             </p>
 
         </div>
 
 
-        <!-- Flash Messages -->
+        <!-- =================================================
+             REGISTER FORM
+             ================================================= -->
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-
-            {% if messages %}
-
-                <div class="auth-messages">
-
-                    {% for category, message in messages %}
-
-                        <div class="auth-message auth-message-{{ category }}">
-
-                            <span>
-
-                                {% if category == "success" %}
-                                    ✓
-                                {% else %}
-                                    !
-                                {% endif %}
-
-                            </span>
-
-                            {{ message }}
-
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            {% endif %}
-
-        {% endwith %}
+        <form
+            method="POST"
+            action="{{ url_for('register') }}"
+            class="auth-form">
 
 
-        <!-- Registration Form -->
+            <!-- CSRF PROTECTION -->
 
-        <form method="POST"
-              action="{{ url_for('register') }}"
-              class="auth-form">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}">
 
+
+            <!-- NAME -->
 
             <div class="form-group">
 
@@ -128,11 +208,13 @@
                     name="name"
                     placeholder="Enter your name"
                     autocomplete="name"
-                    required
-                >
+                    maxlength="100"
+                    required>
 
             </div>
 
+
+            <!-- EMAIL -->
 
             <div class="form-group">
 
@@ -146,11 +228,13 @@
                     name="email"
                     placeholder="Enter your email"
                     autocomplete="email"
-                    required
-                >
+                    maxlength="254"
+                    required>
 
             </div>
 
+
+            <!-- PASSWORD -->
 
             <div class="form-group">
 
@@ -162,14 +246,19 @@
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Minimum 6 characters"
+                    placeholder="Create a password"
                     autocomplete="new-password"
-                    minlength="6"
-                    required
-                >
+                    minlength="8"
+                    required>
+
+                <small>
+                    Use at least 8 characters.
+                </small>
 
             </div>
 
+
+            <!-- CONFIRM PASSWORD -->
 
             <div class="form-group">
 
@@ -183,43 +272,256 @@
                     name="confirm_password"
                     placeholder="Re-enter your password"
                     autocomplete="new-password"
-                    minlength="6"
-                    required
-                >
+                    minlength="8"
+                    required>
 
             </div>
 
 
+            <!-- PASSWORD REQUIREMENT INFO -->
+
+            <div
+                class="summary-card"
+                style="margin-bottom: 20px;">
+
+                <div class="summary-icon">
+                    🔐
+                </div>
+
+                <div class="summary-content">
+
+                    <span>
+                        Account Security
+                    </span>
+
+                    <small>
+                        Your password is securely hashed before
+                        being stored. ExpenseWise never stores
+                        your plain-text password.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- REGISTER BUTTON -->
+
             <button
                 type="submit"
-                class="auth-submit">
+                class="btn btn-primary"
+                style="width: 100%;">
+
                 Create Account
+
             </button>
+
 
         </form>
 
 
-        <div class="auth-divider">
-            <span>OR</span>
-        </div>
+        <!-- =================================================
+             LOGIN LINK
+             ================================================= -->
 
-
-        <div class="auth-footer">
+        <div
+            style="
+                text-align: center;
+                margin-top: 24px;
+            ">
 
             <p>
+
                 Already have an account?
 
-                <a href="{{ url_for('login') }}">
+                <a
+                    href="{{ url_for('login') }}"
+                    style="font-weight: 700;">
+
                     Login
+
                 </a>
+
             </p>
 
         </div>
 
 
+        <!-- =================================================
+             BACK TO HOME
+             ================================================= -->
+
+        <div
+            style="
+                text-align: center;
+                margin-top: 14px;
+            ">
+
+            <a
+                href="{{ url_for('landing') }}"
+                class="secondary-btn">
+
+                ← Back to Home
+
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-brand">
+
+        <strong>
+            ExpenseWise
+        </strong>
+
+        <span>
+            Smart Student Expense Tracker
+        </span>
+
     </div>
 
-</div>
+
+    <p>
+        Secure expense tracking for smarter financial decisions.
+    </p>
+
+
+    <p class="copyright">
+        © 2026 ExpenseWise
+    </p>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* -----------------------------------------------------
+   CLIENT-SIDE PASSWORD MATCH CHECK
+   ----------------------------------------------------- */
+
+const registerForm =
+    document.querySelector(".auth-form");
+
+const passwordInput =
+    document.getElementById("password");
+
+const confirmPasswordInput =
+    document.getElementById("confirm_password");
+
+
+if (
+    registerForm &&
+    passwordInput &&
+    confirmPasswordInput
+) {
+
+    registerForm.addEventListener(
+        "submit",
+        function (event) {
+
+            if (
+                passwordInput.value !==
+                confirmPasswordInput.value
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    "Passwords do not match."
+                );
+
+                confirmPasswordInput.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* -----------------------------------------------------
+   LOADING SCREEN
+   ----------------------------------------------------- */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        const loader =
+            document.getElementById("page-loader");
+
+        setTimeout(
+            function () {
+
+                if (loader) {
+
+                    loader.classList.add(
+                        "loader-hidden"
+                    );
+
+                }
+
+            },
+            350
+        );
+
+    }
+);
+
+
+/* -----------------------------------------------------
+   TOAST AUTO DISMISS
+   ----------------------------------------------------- */
+
+setTimeout(
+    function () {
+
+        const toasts =
+            document.querySelectorAll(".toast");
+
+        toasts.forEach(
+            function (toast) {
+
+                toast.style.animation =
+                    "toastOut 0.35s ease forwards";
+
+                setTimeout(
+                    function () {
+
+                        toast.remove();
+
+                    },
+                    350
+                );
+
+            }
+        );
+
+    },
+    3500
+);
+
+
+</script>
+
 
 </body>
 

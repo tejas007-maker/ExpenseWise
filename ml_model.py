@@ -1,227 +1,190 @@
 import re
-from collections import Counter, defaultdict
 
 
-training_data = [
+# =========================================================
+# EXPENSE CATEGORY KEYWORDS
+# =========================================================
 
-    # FOOD
-    ("pizza", "Food"),
-    ("burger", "Food"),
-    ("restaurant", "Food"),
-    ("food", "Food"),
-    ("sandwich", "Food"),
-    ("coffee", "Food"),
-    ("tea", "Food"),
-    ("lunch", "Food"),
-    ("dinner", "Food"),
-    ("breakfast", "Food"),
-    ("snacks", "Food"),
-    ("meal", "Food"),
-    ("dominos", "Food"),
-    ("zomato", "Food"),
-    ("swiggy", "Food"),
-    ("hotel food", "Food"),
-    ("canteen", "Food"),
+CATEGORY_KEYWORDS = {
 
-    # TRAVEL
-    ("bus", "Travel"),
-    ("train", "Travel"),
-    ("uber", "Travel"),
-    ("ola", "Travel"),
-    ("auto", "Travel"),
-    ("taxi", "Travel"),
-    ("petrol", "Travel"),
-    ("fuel", "Travel"),
-    ("travel", "Travel"),
-    ("ticket", "Travel"),
-    ("metro", "Travel"),
-    ("bus pass", "Travel"),
-    ("train ticket", "Travel"),
-    ("cab", "Travel"),
+    "Food": {
+        "food",
+        "meal",
+        "lunch",
+        "dinner",
+        "breakfast",
+        "restaurant",
+        "pizza",
+        "burger",
+        "sandwich",
+        "snacks",
+        "snack",
+        "canteen",
+        "swiggy",
+        "zomato",
+        "coffee",
+        "tea",
+        "chai",
+        "juice",
+    },
 
-    # SHOPPING
-    ("shirt", "Shopping"),
-    ("shoes", "Shopping"),
-    ("clothes", "Shopping"),
-    ("amazon", "Shopping"),
-    ("headphones", "Shopping"),
-    ("watch", "Shopping"),
-    ("shopping", "Shopping"),
-    ("bag", "Shopping"),
-    ("tshirt", "Shopping"),
-    ("jeans", "Shopping"),
-    ("jacket", "Shopping"),
-    ("mobile", "Shopping"),
-    ("phone", "Shopping"),
-    ("accessories", "Shopping"),
+    "Transport": {
+        "uber",
+        "ola",
+        "bus",
+        "train",
+        "metro",
+        "auto",
+        "cab",
+        "taxi",
+        "fuel",
+        "petrol",
+        "diesel",
+        "parking",
+        "travel",
+    },
 
-    # COLLEGE
-    ("notebook", "College"),
-    ("books", "College"),
-    ("college", "College"),
-    ("exam", "College"),
-    ("stationery", "College"),
-    ("pen", "College"),
-    ("project", "College"),
-    ("assignment", "College"),
-    ("lab", "College"),
-    ("practical", "College"),
-    ("printing", "College"),
-    ("xerox", "College"),
-    ("notes", "College"),
-    ("engineering books", "College"),
-    ("college fees", "College"),
+    "Education": {
+        "book",
+        "books",
+        "course",
+        "fees",
+        "college",
+        "exam",
+        "study",
+        "notebook",
+        "stationery",
+        "pen",
+        "pencil",
+        "project",
+        "print",
+    },
 
-    # ENTERTAINMENT
-    ("movie", "Entertainment"),
-    ("netflix", "Entertainment"),
-    ("game", "Entertainment"),
-    ("concert", "Entertainment"),
-    ("spotify", "Entertainment"),
-    ("entertainment", "Entertainment"),
-    ("youtube", "Entertainment"),
-    ("prime video", "Entertainment"),
-    ("gaming", "Entertainment"),
-    ("cinema", "Entertainment"),
-    ("subscription", "Entertainment"),
-    ("music", "Entertainment")
-]
+    "Shopping": {
+        "shirt",
+        "shoes",
+        "clothes",
+        "shopping",
+        "amazon",
+        "flipkart",
+        "watch",
+        "bag",
+        "dress",
+        "jeans",
+        "purchase",
+    },
 
+    "Entertainment": {
+        "movie",
+        "cinema",
+        "netflix",
+        "spotify",
+        "game",
+        "gaming",
+        "concert",
+        "music",
+        "subscription",
+        "entertainment",
+    },
+
+    "Health": {
+        "medicine",
+        "doctor",
+        "hospital",
+        "pharmacy",
+        "medical",
+        "health",
+        "gym",
+        "fitness",
+        "tablet",
+    },
+
+    "Bills": {
+        "electricity",
+        "water",
+        "internet",
+        "wifi",
+        "recharge",
+        "bill",
+        "phone",
+        "mobile",
+        "rent",
+    },
+}
+
+
+# =========================================================
+# TOKENIZER
+# =========================================================
 
 def tokenize(text):
 
     return re.findall(
-        r"\b[a-z]+\b",
+        r"[a-z0-9]+",
         text.lower()
     )
 
 
-class ExpenseClassifier:
-
-    def __init__(self, data):
-
-        self.class_counts = Counter()
-
-        self.word_counts = defaultdict(
-            Counter
-        )
-
-        self.total_words = Counter()
-
-        self.vocabulary = set()
-
-        for text, category in data:
-
-            self.class_counts[
-                category
-            ] += 1
-
-            words = tokenize(text)
-
-            for word in words:
-
-                self.word_counts[
-                    category
-                ][word] += 1
-
-                self.total_words[
-                    category
-                ] += 1
-
-                self.vocabulary.add(
-                    word
-                )
-
-    def predict(self, text):
-
-        words = tokenize(text)
-
-        total_examples = sum(
-            self.class_counts.values()
-        )
-
-        scores = {}
-
-        for category in self.class_counts:
-
-            probability = (
-                self.class_counts[category]
-                / total_examples
-            )
-
-            for word in words:
-
-                word_count = (
-                    self.word_counts[
-                        category
-                    ][word]
-                )
-
-                total = (
-                    self.total_words[
-                        category
-                    ]
-                )
-
-                vocabulary_size = len(
-                    self.vocabulary
-                )
-
-                word_probability = (
-                    (word_count + 1)
-                    /
-                    (
-                        total
-                        + vocabulary_size
-                    )
-                )
-
-                probability *= (
-                    word_probability
-                )
-
-            scores[
-                category
-            ] = probability
-
-        return max(
-            scores,
-            key=scores.get
-        )
-
-
-model = ExpenseClassifier(
-    training_data
-)
-
+# =========================================================
+# CATEGORY PREDICTION
+# =========================================================
 
 def predict_category(description):
 
-    return model.predict(
-        description
+    tokens = set(
+        tokenize(description)
     )
 
+    best_category = "Other"
+
+    best_score = 0
+
+    for category, keywords in (
+        CATEGORY_KEYWORDS.items()
+    ):
+
+        score = len(
+            tokens.intersection(
+                keywords
+            )
+        )
+
+        if score > best_score:
+
+            best_score = score
+
+            best_category = category
+
+    return best_category
+
+
+# =========================================================
+# TEST
+# =========================================================
 
 if __name__ == "__main__":
 
-    test_expenses = [
+    tests = [
 
-        "pizza",
-        "Uber ride",
-        "Amazon headphones",
-        "college notebook",
-        "Netflix subscription",
-        "engineering books",
-        "petrol for bike",
+        "pizza and coffee",
+
+        "metro ticket",
+
+        "python programming book",
+
+        "new shoes",
+
         "movie ticket",
-        "Swiggy lunch"
+
+        "medicine",
+
+        "wifi bill",
 
     ]
 
-    for expense in test_expenses:
+    for item in tests:
 
         print(
-            expense,
-            "->",
-            predict_category(expense)
+            f"{item} -> "
+            f"{predict_category(item)}"
         )
