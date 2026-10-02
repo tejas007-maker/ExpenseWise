@@ -1,0 +1,1027 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | ExpenseWise</title>
+
+    <!-- Cropper.js CSS -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css"
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        body.crop-modal-open {
+            overflow: hidden;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        header nav {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .heading {
+            margin-bottom: 22px;
+        }
+
+        .heading h1 {
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #64748b;
+        }
+
+        .card {
+            background: white;
+            padding: 26px;
+            border-radius: 16px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #dbeafe;
+            border: 3px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            color: #172033;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #bfdbfe;
+            border-color: #2563eb;
+        }
+
+        input[type="file"] {
+            max-width: 100%;
+            padding: 8px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[readonly] {
+            background: #f8fafc;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-row input {
+            width: auto;
+            flex-shrink: 0;
+        }
+
+        .checkbox-row label {
+            font-weight: normal;
+        }
+
+        .btn {
+            display: inline-block;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #334155;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .danger-card {
+            border: 1px solid #fecaca;
+        }
+
+        .flash {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .flash.error,
+        .flash.danger {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .flash.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        /* Crop modal */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.78);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .crop-modal.is-open {
+            display: flex;
+        }
+
+        .crop-dialog {
+            width: 100%;
+            max-width: 650px;
+            max-height: 95vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .crop-dialog h2 {
+            margin: 0 0 8px;
+        }
+
+        .crop-workspace {
+            width: 100%;
+            height: 350px;
+            margin: 18px 0;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .crop-workspace img {
+            display: block;
+            max-width: 100%;
+        }
+
+        .crop-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .crop-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .crop-preview-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        .crop-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #e2e8f0;
+            border: 2px solid #cbd5e1;
+            flex-shrink: 0;
+        }
+
+        .crop-preview img {
+            max-width: 100%;
+        }
+
+        #cropStatus {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #166534;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            header nav {
+                gap: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .container {
+                margin-top: 24px;
+            }
+
+            .crop-modal {
+                padding: 10px;
+            }
+
+            .crop-dialog {
+                padding: 16px;
+            }
+
+            .crop-workspace {
+                height: 280px;
+            }
+
+            .crop-bottom {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .crop-bottom .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>ExpenseWise</h2>
+
+    <nav>
+        <a href="{{ url_for('home') }}">Dashboard</a>
+        <a href="{{ url_for('analytics') }}">Analytics</a>
+        <a href="{{ url_for('budget') }}">Budget</a>
+        <a href="{{ url_for('profile') }}">My Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <div class="heading">
+        <h1>My Profile</h1>
+        <p>Manage your personal information and account settings.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}" role="status">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Personal Information -->
+    <form
+        id="profileForm"
+        method="POST"
+        action="{{ url_for('profile') }}"
+        enctype="multipart/form-data"
+    >
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <section class="card">
+            <h2>Personal Information</h2>
+
+            <div class="profile-top">
+
+                {% if current_user.profile_photo %}
+                    <img
+                        class="avatar"
+                        src="{{ current_user.profile_photo }}"
+                        alt="Profile photo"
+                    >
+                {% else %}
+                    <div
+                        class="avatar"
+                        style="display:flex;align-items:center;justify-content:center;font-size:35px;"
+                        aria-label="Default profile image"
+                    >👤</div>
+                {% endif %}
+
+                <div>
+                    <strong>{{ current_user.name }}</strong>
+                    <p class="muted">{{ current_user.email }}</p>
+
+                    <label for="profile_photo">Change profile photo</label>
+
+                    <input
+                        type="file"
+                        id="profile_photo"
+                        name="profile_photo"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
+
+                    <p class="muted">
+                        Select a JPG, PNG or WebP image, up to 2 MB.
+                        You can crop the photo before uploading.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <input
+                        id="name"
+                        name="name"
+                        value="{{ current_user.name or '' }}"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value="{{ current_user.email or '' }}"
+                        maxlength="254"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input
+                        id="date_of_birth"
+                        type="date"
+                        name="date_of_birth"
+                        value="{{ current_user.date_of_birth or '' }}"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender">
+                        <option value=""
+                            {% if not current_user.gender %}selected{% endif %}>
+                            Prefer not to say
+                        </option>
+                        <option value="Male"
+                            {% if current_user.gender == 'Male' %}selected{% endif %}>
+                            Male
+                        </option>
+                        <option value="Female"
+                            {% if current_user.gender == 'Female' %}selected{% endif %}>
+                            Female
+                        </option>
+                        <option value="Other"
+                            {% if current_user.gender == 'Other' %}selected{% endif %}>
+                            Other
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        id="phone"
+                        name="phone"
+                        value="{{ current_user.phone or '' }}"
+                        maxlength="20"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="occupation">Occupation</label>
+                    <input
+                        id="occupation"
+                        name="occupation"
+                        value="{{ current_user.occupation or '' }}"
+                        maxlength="100"
+                        placeholder="e.g. Student"
+                    >
+                </div>
+
+                <div class="field full">
+                    <label for="organization">College / Organization</label>
+                    <input
+                        id="organization"
+                        name="organization"
+                        value="{{ current_user.organization or '' }}"
+                        maxlength="150"
+                        placeholder="Your college or organization"
+                    >
+                </div>
+
+                <div class="field full">
+                    <label for="bio">About Me</label>
+                    <textarea
+                        id="bio"
+                        name="bio"
+                        maxlength="500"
+                        placeholder="Write a short introduction..."
+                    >{{ current_user.bio or '' }}</textarea>
+                </div>
+
+                <div class="field">
+                    <label for="currency">Preferred Currency</label>
+                    <select id="currency" name="currency">
+                        <option value="INR"
+                            {% if (current_user.currency or 'INR') == 'INR' %}selected{% endif %}>
+                            INR - Indian Rupee (₹)
+                        </option>
+                        <option value="USD"
+                            {% if current_user.currency == 'USD' %}selected{% endif %}>
+                            USD - US Dollar ($)
+                        </option>
+                        <option value="EUR"
+                            {% if current_user.currency == 'EUR' %}selected{% endif %}>
+                            EUR - Euro (€)
+                        </option>
+                        <option value="GBP"
+                            {% if current_user.currency == 'GBP' %}selected{% endif %}>
+                            GBP - British Pound (£)
+                        </option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="account_created">Account Created</label>
+                    <input
+                        id="account_created"
+                        value="{{ current_user.created_at or 'Not available' }}"
+                        readonly
+                    >
+                </div>
+
+                <div class="field full">
+                    <label>Email Notifications</label>
+
+                    <div class="checkbox-row">
+                        <input
+                            type="checkbox"
+                            id="email_notifications"
+                            name="email_notifications"
+                            value="on"
+                            {% if current_user.email_notifications %}checked{% endif %}
+                        >
+
+                        <label for="email_notifications">
+                            Receive budget alerts and account emails
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+            <button type="submit" class="btn">Save Changes</button>
+        </section>
+    </form>
+
+    <!-- Change Password -->
+    <section class="card">
+        <h2>Change Password</h2>
+
+        <p class="muted">
+            Use a strong password that you do not use on other websites.
+        </p>
+
+        <form
+            method="POST"
+            action="{{ url_for('change_password') }}"
+        >
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <div class="form-grid">
+
+                <div class="field full">
+                    <label for="current_password">Current Password</label>
+                    <input
+                        type="password"
+                        id="current_password"
+                        name="current_password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="new_password">New Password</label>
+                    <input
+                        type="password"
+                        id="new_password"
+                        name="new_password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <br>
+            <button type="submit" class="btn">Update Password</button>
+        </form>
+    </section>
+
+    <!-- Delete Account -->
+    <section class="card danger-card">
+        <h2>Delete Account</h2>
+
+        <p class="muted">
+            Deleting your account may permanently remove your profile
+            and associated expense records. Back up any information
+            you need first.
+        </p>
+
+        <form
+            method="POST"
+            action="{{ url_for('delete_account') }}"
+            onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');"
+        >
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <div class="field">
+                <label for="delete_password">
+                    Enter your password to confirm
+                </label>
+
+                <input
+                    type="password"
+                    id="delete_password"
+                    name="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-danger">
+                Delete My Account
+            </button>
+        </form>
+    </section>
+
+</main>
+
+<!-- Photo Crop Modal -->
+<div
+    id="cropModal"
+    class="crop-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cropTitle"
+>
+    <div class="crop-dialog">
+
+        <h2 id="cropTitle">Crop Your Profile Photo</h2>
+        <p class="muted">
+            Drag the image to reposition it. Use the zoom buttons
+            to adjust your photo.
+        </p>
+
+        <div class="crop-workspace">
+            <img id="cropImage" alt="Image to crop">
+        </div>
+
+        <div class="crop-controls">
+            <button type="button" id="zoomIn" class="btn btn-secondary">
+                Zoom In +
+            </button>
+
+            <button type="button" id="zoomOut" class="btn btn-secondary">
+                Zoom Out −
+            </button>
+
+            <button type="button" id="resetCrop" class="btn btn-secondary">
+                Reset
+            </button>
+        </div>
+
+        <div class="crop-preview-wrap">
+            <div id="cropPreview" class="crop-preview"></div>
+            <div>
+                <strong>Profile Preview</strong>
+                <p class="muted">Your photo will be cropped into a square.</p>
+            </div>
+        </div>
+
+        <p id="cropStatus" role="status" aria-live="polite"></p>
+
+        <div class="crop-bottom">
+            <button
+                type="button"
+                id="cancelCrop"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </button>
+
+            <button type="button" id="saveCrop" class="btn">
+                Save &amp; Upload
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Load Cropper.js before initializing it -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+<script>
+(function () {
+    "use strict";
+
+    const input = document.getElementById("profile_photo");
+    const form = document.getElementById("profileForm");
+    const modal = document.getElementById("cropModal");
+    const image = document.getElementById("cropImage");
+    const preview = document.getElementById("cropPreview");
+    const status = document.getElementById("cropStatus");
+    const saveButton = document.getElementById("saveCrop");
+    const cancelButton = document.getElementById("cancelCrop");
+
+    if (!input || !form || !modal || !image ||
+        !preview || !status || !saveButton || !cancelButton) {
+        console.error("Profile cropper: A required HTML element is missing.");
+        return;
+    }
+
+    let cropper = null;
+    let imageURL = null;
+    let uploading = false;
+
+    function showStatus(message, isError) {
+        status.textContent = message;
+        status.style.color = isError ? "#b91c1c" : "#166534";
+    }
+
+    function releaseImageURL() {
+        if (imageURL) {
+            URL.revokeObjectURL(imageURL);
+            imageURL = null;
+        }
+    }
+
+    function closeModal() {
+        if (uploading) return;
+
+        modal.classList.remove("is-open");
+        document.body.classList.remove("crop-modal-open");
+
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute("src");
+        preview.replaceChildren();
+        input.value = "";
+        releaseImageURL();
+        showStatus("");
+    }
+
+    input.addEventListener("change", function () {
+        const file = input.files && input.files[0];
+
+        if (!file) return;
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            alert("Choose a JPG, PNG, or WebP image.");
+            input.value = "";
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Image size must be less than 2 MB.");
+            input.value = "";
+            return;
+        }
+
+        if (typeof Cropper === "undefined") {
+            alert("Cropper.js could not load. Check your internet connection and refresh the page.");
+            input.value = "";
+            return;
+        }
+
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        releaseImageURL();
+        preview.replaceChildren();
+        showStatus("Loading image...", false);
+
+        modal.classList.add("is-open");
+        document.body.classList.add("crop-modal-open");
+
+        imageURL = URL.createObjectURL(file);
+
+        image.onload = function () {
+            image.onload = null;
+            image.onerror = null;
+
+            try {
+                cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: "move",
+                    autoCropArea: 0.85,
+                    responsive: true,
+                    background: false,
+                    preview: preview,
+                    zoomable: true,
+                    zoomOnWheel: true,
+                    movable: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    ready: function () {
+                        showStatus("Adjust your photo, then click Save & Upload.", false);
+                    }
+                });
+            } catch (error) {
+                console.error("Cropper initialization failed:", error);
+                showStatus("Could not open the crop editor. Please try another image.", true);
+            }
+        };
+
+        image.onerror = function () {
+            image.onload = null;
+            image.onerror = null;
+            showStatus("Could not load this image. Please try another photo.", true);
+        };
+
+        image.src = imageURL;
+    });
+
+    const zoomIn = document.getElementById("zoomIn");
+    const zoomOut = document.getElementById("zoomOut");
+    const resetCrop = document.getElementById("resetCrop");
+
+    if (zoomIn) {
+        zoomIn.addEventListener("click", function () {
+            if (cropper) cropper.zoom(0.1);
+        });
+    }
+
+    if (zoomOut) {
+        zoomOut.addEventListener("click", function () {
+            if (cropper) cropper.zoom(-0.1);
+        });
+    }
+
+    if (resetCrop) {
+        resetCrop.addEventListener("click", function () {
+            if (cropper) cropper.reset();
+        });
+    }
+
+    cancelButton.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+            closeModal();
+        }
+    });
+
+    saveButton.addEventListener("click", function () {
+        if (!cropper || uploading) {
+            showStatus("Wait for the crop editor to finish loading.", true);
+            return;
+        }
+
+        if (typeof DataTransfer === "undefined") {
+            showStatus("Your browser does not support this upload method. Please use an updated browser.", true);
+            return;
+        }
+
+        uploading = true;
+        saveButton.disabled = true;
+        cancelButton.disabled = true;
+        showStatus("Preparing your cropped photo...", false);
+
+        try {
+            cropper.getCroppedCanvas({
+                width: 512,
+                height: 512,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: "high"
+            }).toBlob(function (blob) {
+                if (!blob) {
+                    uploading = false;
+                    saveButton.disabled = false;
+                    cancelButton.disabled = false;
+                    showStatus("Could not crop the image. Please try again.", true);
+                    return;
+                }
+
+                try {
+                    const croppedFile = new File(
+                        [blob],
+                        "profile-photo.jpg",
+                        { type: "image/jpeg" }
+                    );
+
+                    const transfer = new DataTransfer();
+                    transfer.items.add(croppedFile);
+                    input.files = transfer.files;
+
+                    showStatus("Uploading cropped photo...", false);
+
+                    /*
+                     * Submit the existing profile form, including its
+                     * CSRF token and other personal-information fields.
+                     * The Flask profile route must process profile_photo.
+                     */
+                    form.submit();
+
+                } catch (error) {
+                    console.error("Photo preparation failed:", error);
+                    uploading = false;
+                    saveButton.disabled = false;
+                    cancelButton.disabled = false;
+                    showStatus("Could not prepare the photo for upload.", true);
+                }
+            }, "image/jpeg", 0.90);
+
+        } catch (error) {
+            console.error("Cropping failed:", error);
+            uploading = false;
+            saveButton.disabled = false;
+            cancelButton.disabled = false;
+            showStatus("Cropping failed. Please try again.", true);
+        }
+    });
+})();
+</script>
+
+</body>
+</html>
