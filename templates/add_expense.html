@@ -8,11 +8,8 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-          content="Add a new expense to your ExpenseWise account">
-
-    <meta name="theme-color"
-          content="#172554">
+    <meta name="robots"
+          content="noindex, nofollow">
 
     <title>Add Expense | ExpenseWise</title>
 
@@ -41,88 +38,10 @@
 
 
 <!-- =====================================================
-     LOADING SCREEN
-     ===================================================== -->
-
-<div id="page-loader">
-
-    <div class="loader-content">
-
-        <div class="loader-logo">
-            ₹
-        </div>
-
-        <div class="loader-title">
-            ExpenseWise
-        </div>
-
-        <div class="loader-subtitle">
-            Smart Student Expense Tracker
-        </div>
-
-        <div class="loader-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     TOAST NOTIFICATIONS
-     ===================================================== -->
-
-<div id="toast-container">
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-
-        {% for category, message in messages %}
-
-            <div class="toast toast-{{ category }}">
-
-                <div class="toast-icon">
-
-                    {% if category == "success" %}
-                        ✓
-                    {% else %}
-                        !
-                    {% endif %}
-
-                </div>
-
-                <div class="toast-message">
-                    {{ message }}
-                </div>
-
-                <button
-                    class="toast-close"
-                    onclick="this.parentElement.remove()"
-                    aria-label="Close notification">
-
-                    ×
-
-                </button>
-
-            </div>
-
-        {% endfor %}
-
-    {% endwith %}
-
-</div>
-
-
-<!-- =====================================================
      NAVIGATION
      ===================================================== -->
 
 <nav class="navbar">
-
-
-    <!-- BRAND -->
 
     <a href="{{ url_for('home') }}"
        class="brand">
@@ -146,8 +65,6 @@
     </a>
 
 
-    <!-- NAVIGATION LINKS -->
-
     <div class="nav-links">
 
         <a href="{{ url_for('home') }}">
@@ -170,29 +87,25 @@
     </div>
 
 
-    <!-- USER -->
-
     <div class="nav-user">
 
         <span class="user-welcome">
             👤 {{ current_user.name }}
         </span>
 
+        <form
+            method="POST"
+            action="{{ url_for('logout') }}"
+            class="inline-form">
 
-        <!-- SECURE LOGOUT -->
-
-        <form method="POST"
-              action="{{ url_for('logout') }}"
-              style="display: inline;">
-
-            <input type="hidden"
-                   name="csrf_token"
-                   value="{{ csrf_token() }}">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}">
 
             <button
                 type="submit"
-                class="logout-link"
-                style="background: none; border: none; padding: 0; font: inherit; cursor: pointer;">
+                class="logout-link">
 
                 Logout
 
@@ -206,99 +119,74 @@
 
 
 <!-- =====================================================
-     MAIN CONTENT
+     FORM
      ===================================================== -->
 
-<main class="dashboard-container">
+<main class="form-page">
 
+    <section class="form-card">
 
-    <!-- =================================================
-         PAGE HEADER
-         ================================================= -->
+        <div class="form-heading">
 
-    <section class="dashboard-hero">
-
-        <div class="hero-content">
-
-            <span class="hero-badge">
-                ✦ Expense Management
+            <span class="section-label">
+                EXPENSE TRACKER
             </span>
 
             <h1>
-                Add a New
-                <span>Expense</span>
+                Add Expense
             </h1>
 
             <p>
-                Record your spending and let ExpenseWise
-                automatically categorize it using AI.
+                Record a transaction and let ExpenseWise
+                suggest a category.
             </p>
 
         </div>
 
 
-        <div class="hero-stat-card">
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
-            <div class="hero-stat-label">
-                Smart Categorization
-            </div>
+            {% if messages %}
 
-            <div class="hero-stat-value">
-                AI
-            </div>
+                <div class="auth-messages">
 
-            <div class="hero-stat-small">
-                Automatic expense category prediction
-            </div>
+                    {% for category, message in messages %}
 
-        </div>
+                        <div class="auth-message auth-message-{{ category }}">
 
-    </section>
+                            <span>
 
+                                {% if category == "success" %}
+                                    ✓
+                                {% else %}
+                                    !
+                                {% endif %}
 
-    <!-- =================================================
-         ADD EXPENSE FORM
-         ================================================= -->
+                            </span>
 
-    <section class="budget-progress-card">
+                            {{ message }}
 
+                        </div>
 
-        <div class="progress-header">
+                    {% endfor %}
 
-            <div>
+                </div>
 
-                <span class="section-label">
-                    EXPENSE TRACKER
-                </span>
+            {% endif %}
 
-                <h2>
-                    Expense Details
-                </h2>
-
-                <p>
-                    Enter the details of your transaction below.
-                </p>
-
-            </div>
-
-        </div>
+        {% endwith %}
 
 
-        <!-- FORM -->
+        <form
+            method="POST"
+            action="{{ url_for('add_expense') }}"
+            class="expense-form">
 
-        <form method="POST"
-              action="{{ url_for('add_expense') }}"
-              class="auth-form">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}">
 
-
-            <!-- CSRF PROTECTION -->
-
-            <input type="hidden"
-                   name="csrf_token"
-                   value="{{ csrf_token() }}">
-
-
-            <!-- DESCRIPTION -->
 
             <div class="form-group">
 
@@ -307,302 +195,92 @@
                 </label>
 
                 <input
-                    type="text"
                     id="description"
                     name="description"
-                    placeholder="e.g. Lunch at college"
+                    type="text"
                     maxlength="200"
-                    autocomplete="off"
-                    required>
-
-                <small>
-                    Describe what you spent money on.
-                </small>
+                    placeholder="e.g. Lunch at college canteen"
+                    required
+                    autofocus>
 
             </div>
 
 
-            <!-- AMOUNT -->
-
-            <div class="form-group">
-
-                <label for="amount">
-                    Amount
-                </label>
-
-                <input
-                    type="number"
-                    id="amount"
-                    name="amount"
-                    placeholder="Enter amount"
-                    min="0.01"
-                    step="0.01"
-                    inputmode="decimal"
-                    required>
-
-                <small>
-                    Enter the expense amount in ₹.
-                </small>
-
-            </div>
+            <div class="form-row">
 
 
-            <!-- DATE -->
+                <div class="form-group">
 
-            <div class="form-group">
+                    <label for="amount">
+                        Amount (₹)
+                    </label>
 
-                <label for="date">
-                    Date
-                </label>
+                    <input
+                        id="amount"
+                        name="amount"
+                        type="number"
+                        min="0.01"
+                        max="100000000"
+                        step="0.01"
+                        placeholder="0.00"
+                        required>
 
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    required>
-
-                <small>
-                    Select the date of the expense.
-                </small>
-
-            </div>
-
-
-            <!-- AI INFO -->
-
-            <div class="summary-card">
-
-                <div class="summary-icon">
-                    🤖
                 </div>
 
-                <div class="summary-content">
 
-                    <span>
-                        AI Category Prediction
-                    </span>
+                <div class="form-group">
 
-                    <small>
-                        ExpenseWise will automatically predict
-                        the category from your description.
-                    </small>
+                    <label for="date">
+                        Date
+                    </label>
+
+                    <input
+                        id="date"
+                        name="date"
+                        type="date"
+                        value="{{ request.form.get('date', '') }}"
+                        required>
 
                 </div>
 
             </div>
 
 
-            <!-- ACTION BUTTONS -->
+            <button
+                type="submit"
+                class="primary-btn wide-btn">
 
-            <div class="dashboard-action-buttons"
-                 style="margin-top: 24px;">
+                Save Expense
 
-
-                <a
-                    href="{{ url_for('home') }}"
-                    class="secondary-btn">
-
-                    Cancel
-
-                </a>
-
-
-                <button
-                    type="submit"
-                    class="primary-btn">
-
-                    + Add Expense
-
-                </button>
-
-
-            </div>
-
+            </button>
 
         </form>
 
-
     </section>
-
-
-    <!-- =================================================
-         QUICK TIPS
-         ================================================= -->
-
-    <section class="dashboard-actions">
-
-        <div>
-
-            <h2>
-                Track every expense
-            </h2>
-
-            <p>
-                Regularly recording your expenses helps you
-                understand your spending habits and stay
-                within your monthly budget.
-            </p>
-
-        </div>
-
-
-        <div class="dashboard-action-buttons">
-
-            <a
-                href="{{ url_for('analytics') }}"
-                class="secondary-btn">
-
-                View Analytics
-
-            </a>
-
-
-            <a
-                href="{{ url_for('budget') }}"
-                class="primary-btn">
-
-                Manage Budget
-
-            </a>
-
-        </div>
-
-    </section>
-
 
 </main>
 
 
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
-<footer class="footer">
-
-
-    <div class="footer-brand">
-
-        <strong>
-            ExpenseWise
-        </strong>
-
-        <span>
-            Smart Student Expense Tracker
-        </span>
-
-    </div>
-
-
-    <p>
-        Built with Python, Flask, SQLite & Machine Learning
-    </p>
-
-
-    <p class="copyright">
-        © 2026 ExpenseWise
-    </p>
-
-
-</footer>
-
-
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
 <script>
 
+document.addEventListener("DOMContentLoaded", function () {
 
-/* -----------------------------------------------------
-   SET DEFAULT DATE
-   ----------------------------------------------------- */
+    const dateInput =
+        document.getElementById("date");
 
-window.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    if (dateInput && !dateInput.value) {
 
-        const dateInput =
-            document.getElementById("date");
+        const today =
+            new Date().toISOString().split("T")[0];
 
-        if (dateInput && !dateInput.value) {
-
-            const today =
-                new Date().toISOString().split("T")[0];
-
-            dateInput.value = today;
-
-        }
+        dateInput.value = today;
 
     }
-);
 
-
-/* -----------------------------------------------------
-   LOADING SCREEN
-   ----------------------------------------------------- */
-
-window.addEventListener(
-    "load",
-    function () {
-
-        const loader =
-            document.getElementById("page-loader");
-
-        setTimeout(
-            function () {
-
-                if (loader) {
-
-                    loader.classList.add(
-                        "loader-hidden"
-                    );
-
-                }
-
-            },
-            350
-        );
-
-    }
-);
-
-
-/* -----------------------------------------------------
-   TOAST AUTO DISMISS
-   ----------------------------------------------------- */
-
-setTimeout(
-    function () {
-
-        const toasts =
-            document.querySelectorAll(".toast");
-
-        toasts.forEach(
-            function (toast) {
-
-                toast.style.animation =
-                    "toastOut 0.35s ease forwards";
-
-                setTimeout(
-                    function () {
-
-                        toast.remove();
-
-                    },
-                    350
-                );
-
-            }
-        );
-
-    },
-    3500
-);
-
+});
 
 </script>
 
 
 </body>
-
 </html>

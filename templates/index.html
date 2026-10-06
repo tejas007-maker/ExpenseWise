@@ -2,80 +2,45 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
-          content="ExpenseWise dashboard - track expenses, monitor your budget and analyze spending">
+          content="ExpenseWise - Smart student expense tracking, budgeting and spending analytics">
+
+    <meta name="robots"
+          content="noindex, nofollow">
 
     <meta name="theme-color"
           content="#172554">
 
-    <title>
-        Dashboard | ExpenseWise
-    </title>
+    <title>Dashboard | ExpenseWise</title>
 
-    <link
-        rel="icon"
-        type="image/svg+xml"
-        href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon.svg') }}">
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com">
+    <!-- Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin>
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}">
-
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 
 <body>
-
-
-<!-- =====================================================
-     LOADING SCREEN
-     ===================================================== -->
-
-<div id="page-loader">
-
-    <div class="loader-content">
-
-        <div class="loader-logo">
-            ₹
-        </div>
-
-        <div class="loader-title">
-            ExpenseWise
-        </div>
-
-        <div class="loader-subtitle">
-            Smart Student Expense Tracker
-        </div>
-
-        <div class="loader-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-    </div>
-
-</div>
-
 
 <!-- =====================================================
      TOAST NOTIFICATIONS
@@ -90,13 +55,11 @@
             <div class="toast toast-{{ category }}">
 
                 <div class="toast-icon">
-
                     {% if category == "success" %}
                         ✓
                     {% else %}
                         !
                     {% endif %}
-
                 </div>
 
                 <div class="toast-message">
@@ -107,9 +70,7 @@
                     class="toast-close"
                     onclick="this.parentElement.remove()"
                     aria-label="Close notification">
-
                     ×
-
                 </button>
 
             </div>
@@ -127,12 +88,8 @@
 
 <nav class="navbar">
 
-
-    <!-- BRAND -->
-
-    <a
-        href="{{ url_for('home') }}"
-        class="brand">
+    <a href="{{ url_for('home') }}"
+       class="brand">
 
         <div class="brand-icon">
             ₹
@@ -153,16 +110,11 @@
     </a>
 
 
-    <!-- NAVIGATION LINKS -->
-
     <div class="nav-links">
 
-        <a
-            href="{{ url_for('home') }}"
-            class="active">
-
+        <a href="{{ url_for('home') }}"
+           class="active">
             Dashboard
-
         </a>
 
         <a href="{{ url_for('add_expense') }}">
@@ -172,22 +124,13 @@
         <a href="{{ url_for('analytics') }}">
             Analytics
         </a>
-<a href="{{ url_for('profile') }}">My Profile</a>
 
         <a href="{{ url_for('budget') }}">
             Budget
         </a>
-        
-<a href="{{ url_for('profile') }}"
-   style="color: inherit; text-decoration: none; padding: 10px 14px; display: inline-block;">
-    👤 My Profile
-</a>
-
 
     </div>
 
-
-    <!-- USER -->
 
     <div class="nav-user">
 
@@ -195,32 +138,17 @@
             👤 {{ current_user.name }}
         </span>
 
+        <form method="POST"
+              action="{{ url_for('logout') }}"
+              class="inline-form">
 
-        <!-- SECURE LOGOUT -->
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
 
-        <form
-            method="POST"
-            action="{{ url_for('logout') }}"
-            style="display: inline;">
-
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}">
-
-            <button
-                type="submit"
-                class="logout-link"
-                style="
-                    background: none;
-                    border: none;
-                    padding: 0;
-                    font: inherit;
-                    cursor: pointer;
-                ">
-
+            <button type="submit"
+                    class="logout-link">
                 Logout
-
             </button>
 
         </form>
@@ -231,46 +159,54 @@
 
 
 <!-- =====================================================
-     MAIN CONTENT
+     MAIN DASHBOARD
      ===================================================== -->
 
 <main class="dashboard-container">
 
 
-    <!-- =================================================
-         HERO
-         ================================================= -->
+    <!-- HERO -->
 
     <section class="dashboard-hero">
-
 
         <div class="hero-content">
 
             <span class="hero-badge">
-                ✦ Personal Finance Dashboard
+                ✦ Smart Financial Management
             </span>
 
             <h1>
-
-                Welcome,
+                Welcome back,
                 <span>{{ current_user.name }}</span>
-
             </h1>
 
             <p>
-                Track your expenses, monitor your budget and
-                understand your spending habits.
+                Track your expenses, monitor your budget,
+                and understand where your money goes.
             </p>
+
+
+            <div class="hero-buttons">
+
+                <a href="{{ url_for('add_expense') }}"
+                   class="btn btn-primary">
+                    + Add Expense
+                </a>
+
+                <a href="{{ url_for('analytics') }}"
+                   class="btn btn-secondary">
+                    View Analytics →
+                </a>
+
+            </div>
 
         </div>
 
 
-        <!-- BUDGET STATUS -->
-
         <div class="hero-stat-card">
 
             <div class="hero-stat-label">
-                Monthly Budget
+                Current Budget
             </div>
 
             <div class="hero-stat-value">
@@ -278,61 +214,40 @@
             </div>
 
             <div class="hero-stat-small">
-
-                {% if budget_percentage is defined %}
-
-                    {{ "%.1f"|format(budget_percentage) }}%
-                    utilized
-
-                {% else %}
-
-                    Budget tracking active
-
-                {% endif %}
-
+                Monthly spending limit
             </div>
 
         </div>
-
 
     </section>
 
 
     <!-- =================================================
-         SUMMARY CARDS
+         SUMMARY
          ================================================= -->
 
     <section class="summary-grid">
 
-
-        <!-- TOTAL SPENT -->
-
         <div class="summary-card">
 
             <div class="summary-icon">
-                💸
+                ₹
             </div>
 
-            <div class="summary-content">
+            <div>
 
-                <span>
+                <span class="summary-label">
                     Total Spent
                 </span>
 
-                <strong>
+                <strong class="summary-value">
                     ₹{{ "%.2f"|format(total_spent) }}
                 </strong>
-
-                <small>
-                    Current monthly spending
-                </small>
 
             </div>
 
         </div>
 
-
-        <!-- REMAINING -->
 
         <div class="summary-card">
 
@@ -340,99 +255,59 @@
                 💰
             </div>
 
-            <div class="summary-content">
+            <div>
 
-                <span>
-                    Remaining Budget
+                <span class="summary-label">
+                    Remaining
                 </span>
 
-                <strong>
+                <strong class="summary-value">
                     ₹{{ "%.2f"|format(remaining_budget) }}
                 </strong>
-
-                <small>
-                    Available this month
-                </small>
 
             </div>
 
         </div>
 
-
-        <!-- BUDGET STATUS -->
 
         <div class="summary-card">
 
             <div class="summary-icon">
-                {% if budget_status == "Over Budget" %}
-                    ⚠️
-                {% elif budget_status == "Near Limit" %}
-                    🔔
-                {% else %}
-                    ✅
-                {% endif %}
+                📊
             </div>
 
-            <div class="summary-content">
+            <div>
 
-                <span>
-                    Budget Status
+                <span class="summary-label">
+                    Budget Used
                 </span>
 
-                <strong>
-                    {{ budget_status }}
-                </strong>
-
-                <small>
+                <strong class="summary-value">
                     {{ "%.1f"|format(budget_percentage) }}%
-                    of budget used
-                </small>
+                </strong>
 
             </div>
 
         </div>
 
 
-    </section>
+        <div class="summary-card">
 
+            <div class="summary-icon">
+                🧾
+            </div>
 
-    <!-- =================================================
-         QUICK ACTIONS
-         ================================================= -->
+            <div>
 
-    <section class="dashboard-actions">
+                <span class="summary-label">
+                    Expenses
+                </span>
 
-        <div>
+                <strong class="summary-value">
+                    {{ expenses|length }}
+                </strong>
 
-            <h2>
-                Manage Your Expenses
-            </h2>
-
-            <p>
-                Add a new expense or review your spending
-                analytics.
-            </p>
-
-        </div>
-
-
-        <div class="dashboard-action-buttons">
-
-            <a
-                href="{{ url_for('add_expense') }}"
-                class="primary-btn">
-
-                + Add Expense
-
-            </a>
-
-            <a
-                href="{{ url_for('analytics') }}"
-                class="secondary-btn">
-
-                View Analytics →
-
-            </a>
+            </div>
 
         </div>
 
@@ -440,37 +315,81 @@
 
 
     <!-- =================================================
-         EXPENSE LIST
+         BUDGET STATUS
          ================================================= -->
 
     <section class="budget-progress-card">
 
-
-        <div class="progress-header">
+        <div class="budget-progress-header">
 
             <div>
 
                 <span class="section-label">
-                    RECENT EXPENSES
+                    MONTHLY BUDGET
+                </span>
+
+                <h2>
+                    Spending Progress
+                </h2>
+
+            </div>
+
+            <strong>
+                {{ "%.1f"|format(budget_percentage) }}%
+            </strong>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div
+                class="progress-fill"
+                style="width: {{ [budget_percentage, 100]|min }}%;">
+            </div>
+
+        </div>
+
+
+        <div class="budget-progress-footer">
+
+            <span>
+                ₹{{ "%.2f"|format(total_spent) }} spent
+            </span>
+
+            <span>
+                ₹{{ "%.2f"|format(monthly_budget) }} budget
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         EXPENSES
+         ================================================= -->
+
+    <section class="expenses-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-label">
+                    RECENT ACTIVITY
                 </span>
 
                 <h2>
                     Your Expenses
                 </h2>
 
-                <p>
-                    Review and manage your recorded transactions.
-                </p>
-
             </div>
 
 
-            <a
-                href="{{ url_for('add_expense') }}"
-                class="primary-btn">
-
+            <a href="{{ url_for('add_expense') }}"
+               class="add-expense-small">
                 + Add Expense
-
             </a>
 
         </div>
@@ -478,50 +397,18 @@
 
         {% if expenses %}
 
+        <div class="expense-table-wrapper">
 
-        <!-- =================================================
-             DESKTOP TABLE
-             ================================================= -->
-
-        <div
-            class="expense-table-container"
-            style="
-                width: 100%;
-                overflow-x: auto;
-                margin-top: 25px;
-            ">
-
-            <table
-                class="expense-table"
-                style="
-                    width: 100%;
-                    border-collapse: collapse;
-                ">
+            <table class="expense-table">
 
                 <thead>
 
                     <tr>
-
-                        <th>
-                            Description
-                        </th>
-
-                        <th>
-                            Category
-                        </th>
-
-                        <th>
-                            Amount
-                        </th>
-
-                        <th>
-                            Date
-                        </th>
-
-                        <th>
-                            Actions
-                        </th>
-
+                        <th>DATE</th>
+                        <th>DESCRIPTION</th>
+                        <th>CATEGORY</th>
+                        <th>AMOUNT</th>
+                        <th>ACTION</th>
                     </tr>
 
                 </thead>
@@ -533,33 +420,34 @@
 
                     <tr>
 
+                        <td>
+                            {{ expense.date }}
+                        </td>
 
-                        <!-- DESCRIPTION -->
 
                         <td>
 
-                            <strong>
+                            <div class="expense-name">
+
+                                <div class="expense-dot">
+                                    ₹
+                                </div>
+
                                 {{ expense.description }}
-                            </strong>
+
+                            </div>
 
                         </td>
 
 
-                        <!-- CATEGORY -->
-
                         <td>
 
-                            <span
-                                class="hero-badge">
-
+                            <span class="category-badge">
                                 {{ expense.category }}
-
                             </span>
 
                         </td>
 
-
-                        <!-- AMOUNT -->
 
                         <td>
 
@@ -570,44 +458,19 @@
                         </td>
 
 
-                        <!-- DATE -->
-
-                        <td>
-                            {{ expense.date }}
-                        </td>
-
-
-                        <!-- ACTIONS -->
-
                         <td>
 
+                            <div class="action-links">
 
-                            <div
-                                style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 12px;
-                                    flex-wrap: wrap;
-                                ">
-
-
-                                <!-- EDIT -->
-
-                                <a
-                                    href="{{ url_for('edit_expense', id=expense.id) }}"
-                                    class="secondary-btn">
-
+                                <a href="{{ url_for('edit_expense', id=expense.id) }}">
                                     Edit
-
                                 </a>
 
-
-                                <!-- SECURE DELETE -->
 
                                 <form
                                     method="POST"
                                     action="{{ url_for('delete_expense', id=expense.id) }}"
-                                    style="display: inline;">
+                                    class="inline-form">
 
                                     <input
                                         type="hidden"
@@ -617,13 +480,6 @@
                                     <button
                                         type="submit"
                                         class="delete-link"
-                                        style="
-                                            background: none;
-                                            border: none;
-                                            padding: 0;
-                                            font: inherit;
-                                            cursor: pointer;
-                                        "
                                         onclick="return confirm('Are you sure you want to delete this expense?');">
 
                                         Delete
@@ -632,11 +488,9 @@
 
                                 </form>
 
-
                             </div>
 
                         </td>
-
 
                     </tr>
 
@@ -651,112 +505,51 @@
 
         {% else %}
 
+        <div class="empty-state">
 
-        <!-- =================================================
-             EMPTY STATE
-             ================================================= -->
-
-        <div
-            style="
-                text-align: center;
-                padding: 55px 20px;
-            ">
-
-            <div
-                style="
-                    font-size: 52px;
-                    margin-bottom: 15px;
-                ">
-
-                💸
-
+            <div class="empty-icon">
+                ₹
             </div>
-
 
             <h3>
                 No expenses yet
             </h3>
-
 
             <p>
                 Start tracking your spending by adding
                 your first expense.
             </p>
 
-
             <a
                 href="{{ url_for('add_expense') }}"
-                class="primary-btn"
-                style="
-                    display: inline-block;
-                    margin-top: 20px;
-                ">
+                class="btn btn-primary">
 
-                + Add Your First Expense
+                Add Your First Expense
 
             </a>
 
         </div>
 
-
         {% endif %}
-
 
     </section>
 
 
     <!-- =================================================
-         BUDGET INSIGHT
+         QUICK ACTIONS
          ================================================= -->
 
     <section class="dashboard-actions">
 
-
         <div>
 
-            <span class="section-label">
-                SMART INSIGHT
-            </span>
-
-
             <h2>
-
-                {% if budget_status == "Over Budget" %}
-
-                    Your spending is above your budget
-
-                {% elif budget_status == "Near Limit" %}
-
-                    You're approaching your budget limit
-
-                {% else %}
-
-                    Your budget is under control
-
-                {% endif %}
-
+                Take control of your spending
             </h2>
 
-
             <p>
-
-                {% if budget_status == "Over Budget" %}
-
-                    Review your recent expenses and consider
-                    reducing non-essential spending.
-
-                {% elif budget_status == "Near Limit" %}
-
-                    Keep an eye on your upcoming expenses so
-                    you can stay within your monthly limit.
-
-                {% else %}
-
-                    You still have room in your monthly budget.
-                    Continue tracking your expenses consistently.
-
-                {% endif %}
-
+                Use analytics and budgeting tools to
+                understand your financial habits.
             </p>
 
         </div>
@@ -777,15 +570,13 @@
                 href="{{ url_for('analytics') }}"
                 class="primary-btn">
 
-                Analyze Spending →
+                Open Analytics →
 
             </a>
 
         </div>
 
-
     </section>
-
 
 </main>
 
@@ -795,7 +586,6 @@
      ===================================================== -->
 
 <footer class="footer">
-
 
     <div class="footer-brand">
 
@@ -809,93 +599,46 @@
 
     </div>
 
-
     <p>
-        Built with Python, Flask, PostgreSQL & Machine Learning
+        Built with Python, Flask, PostgreSQL/SQLite & AI categorization
     </p>
-
 
     <p class="copyright">
         © 2026 ExpenseWise
     </p>
 
-
 </footer>
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     FAST JAVASCRIPT
      ===================================================== -->
 
 <script>
 
+document.addEventListener("DOMContentLoaded", function () {
 
-/* -----------------------------------------------------
-   LOADING SCREEN
-   ----------------------------------------------------- */
+    document
+        .querySelectorAll(".toast")
+        .forEach(function (toast) {
 
-window.addEventListener(
-    "load",
-    function () {
-
-        const loader =
-            document.getElementById("page-loader");
-
-        setTimeout(
-            function () {
-
-                if (loader) {
-
-                    loader.classList.add(
-                        "loader-hidden"
-                    );
-
-                }
-
-            },
-            350
-        );
-
-    }
-);
-
-
-/* -----------------------------------------------------
-   TOAST AUTO DISMISS
-   ----------------------------------------------------- */
-
-setTimeout(
-    function () {
-
-        const toasts =
-            document.querySelectorAll(".toast");
-
-        toasts.forEach(
-            function (toast) {
+            setTimeout(function () {
 
                 toast.style.animation =
                     "toastOut 0.35s ease forwards";
 
-                setTimeout(
-                    function () {
+                setTimeout(function () {
+                    toast.remove();
+                }, 350);
 
-                        toast.remove();
+            }, 3500);
 
-                    },
-                    350
-                );
+        });
 
-            }
-        );
-
-    },
-    3500
-);
-
+});
 
 </script>
 
 
 </body>
-
 </html>
