@@ -3112,3 +3112,17 @@ textarea {
     }
 
 }
+/* =====================================================
+   PAGE LOADER FIX
+   Prevent loading overlay from blocking the application
+   ===================================================== */
+
+#page-loader {
+    pointer-events: none;
+}
+
+#page-loader.loader-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
